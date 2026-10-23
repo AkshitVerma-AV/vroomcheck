@@ -1,0 +1,278 @@
+{
+  "cluster_id": "TOYOTA__TACOMA__001",
+  "vehicle": "2015-2026 TOYOTA TACOMA",
+  "status": "EMERGING",
+  "title": "Toyota Tacoma Structure complaint cluster",
+  "risk_level": "MEDIUM",
+  "summary": "64 complaints cluster around door, handle, door handle, open, driver, inside. Status: EMERGING.",
+  "claims": [
+    {
+      "text": "Owners of 2015-2026 TOYOTA TACOMA describe a recurring structure problem (door, handle, door handle, open, driver, inside).",
+      "citations": [
+        "C-11740765",
+        "C-11770160",
+        "C-11750131"
+      ]
+    },
+    {
+      "text": "Some reports involve a crash, fire or injury.",
+      "citations": [
+        "C-11764785",
+        "C-11540191"
+      ]
+    },
+    {
+      "text": "The most similar past recall (22V422000, LAMBORGHINI) concerned: The exterior driver-side door handle may not be assembled properly, which can prevent the opening of the driver-side door from the outside.",
+      "citations": [
+        "R-22V422000"
+      ]
+    },
+    {
+      "text": "A related manufacturer bulletin exists: TSB: Some 2016 ? 2023 model year Tacoma vehicles may exhibit a condition where snow or ice builds up between the right or left front door and front fender, prev",
+      "citations": [
+        "T-10234294"
+      ]
+    }
+  ],
+  "rejected_claims": [],
+  "recommended_action": "Analyst review of the cited complaints; consider a preliminary evaluation.",
+  "evidence": {
+    "C-11740765": {
+      "type": "complaint",
+      "date": "2026-05-29 00:00:00",
+      "model_year": 2025,
+      "component": "STRUCTURE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "The interior driver side door handle on my 2025 Toyota Tacoma failed and wouldn't open the door from the inside.  I had to roll down my window to open from the outside.  The dealership replaced the handle assembly under warranty.  This happened at around 9300 miles on the odometer."
+    },
+    "C-11770160": {
+      "type": "complaint",
+      "date": "2026-10-09 00:00:00",
+      "model_year": 2025,
+      "component": "STRUCTURE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "The driver door handle internal mechanism broke under normal operation, preventing exit from the vehicle.  This is a serious safety issue because the driver is literally trapped in the vehicle, unless they roll the window down and engage the handle from the outside, or crawl over the center console to the passenger door.  This is a potentially life-threatening issue.  This problem has been identified, confirmed, and documented by my local official Toyota dealership.  Neither the police nor my insurance company have inspected the door.  No warning lamps, messages, or other symptoms of the probl..."
+    },
+    "C-11750131": {
+      "type": "complaint",
+      "date": "2026-07-13 00:00:00",
+      "model_year": 2025,
+      "component": "STRUCTURE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "The contact owns a 2025 Toyota Tacoma. The contact stated that while stationary and attempting to exit the vehicle from the driver's side, the interior driver's side door handle fractured, preventing the opening or locking of the door from the inside. The handle remained physically attached to the door panel but was inoperable. The vehicle was taken to the local dealer to be inspected. While at the dealer, it was discovered that another Tacoma at the dealer had a similar interior door handle failure. The vehicle was not repaired. The manufacturer was notified of the failure. The failure mileag..."
+    },
+    "C-11752124": {
+      "type": "complaint",
+      "date": "2026-07-22 00:00:00",
+      "model_year": 2025,
+      "component": "STRUCTURE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "The drivers door handle inside the truck has failed leaving me unable to open the drivers door unless I roll the window down and open the door from the outside. I took the truck to a local dealer and they let me know this is a very common problem on the truck and the parts to fix it are on nationwide back order. Was sent home with the vehicle knowing the door is inoperable unless opened from the outside. This poses a serious safety risk in the event of an accident or emergency where one needs to exit the vehicle quickly."
+    },
+    "C-11746472": {
+      "type": "complaint",
+      "date": "2026-06-25 00:00:00",
+      "model_year": 2025,
+      "component": "STRUCTURE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "The interior driver-side door handle/release mechanism on my 2025 SR5 Toyota Tacoma failed without warning. The vehicle has low mileage and was being used normally. When attempting to open the driver door from the inside using ordinary force, an internal component appears to have detached or broken, leaving the interior handle completely inoperative. The handle simply hangs loose. Vehicle and failed component are available for inspection.  This defect creates a significant safety risk because I cannot exit the vehicle through the driver door from inside the cabin. The only way to exit is to ro..."
+    },
+    "C-11728582": {
+      "type": "complaint",
+      "date": "2026-04-01 00:00:00",
+      "model_year": 2025,
+      "component": "STRUCTURE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "My rear backseat driver\u2019s side door handle broke on March 16th, 2026.  I either have to roll down the window and open the door from the outside or I have to let passengers out from exiting from the front seat.  I took it in for inspection by the dealer, West Kendall Toyota on March 17th, 2026.  They had to order a new part.  They tried repairing it on March 31, 2026 but failed to do so and had to reorder the part.  It is still broken as of today April 1st, 2026.  My front seat driver\u2019s side door handle also broke in August of 2025 and I could only get out through opening the window and unlatch..."
+    },
+    "C-11757860": {
+      "type": "complaint",
+      "date": "2026-08-19 00:00:00",
+      "model_year": 2025,
+      "component": "STRUCTURE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "The interior driver's-side door handle assembly on my 2025 Toyota Tacoma failed during normal use while attempting to open the door from inside the vehicle. There was no excessive force, impact, accident, or other damage that caused the failure. There were no warning lights, messages, or noticeable symptoms prior to the handle failing.  The failure creates a safety concern because the driver's door can no longer be opened normally from inside the vehicle using the interior door handle. In an emergency where rapid exit from the vehicle was necessary, such as a collision or vehicle fire, the ina..."
+    },
+    "C-11742223": {
+      "type": "complaint",
+      "date": "2026-06-04 00:00:00",
+      "model_year": 2025,
+      "component": "STRUCTURE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "Front passenger door handle broke under normal use exiting truck resulting in inability to open door from inside, entrapping occupant.    Warranty claim filed with Toyota dealership.  Dealer service advisor stated this is a common failure on Gen 4.Tacomas, and Tundras.  Part is on backorder. Service advisor stated backlog is large and no time estimate can be given when the repair can be made.    This can result in entrapment in an accident if side windows lose power to roll down if capable of opening door from, or crawl in rear and exit through rear doors if child locks are not engaged.    Rec..."
+    },
+    "C-11764785": {
+      "type": "complaint",
+      "date": "2026-09-16 00:00:00",
+      "model_year": 2024,
+      "component": "STRUCTURE",
+      "crash": false,
+      "fire": false,
+      "injured": 1,
+      "deaths": 0,
+      "selected_as": "highest harm",
+      "text": "Driver side doors won\u2019t open. Truck locks you in. It has 25k miles on it and Toyota dealer says they can\u2019t get the parts to make my truck safe."
+    },
+    "C-11540191": {
+      "type": "complaint",
+      "date": "2023-08-22 00:00:00",
+      "model_year": 2023,
+      "component": "UNKNOWN OR OTHER",
+      "crash": false,
+      "fire": false,
+      "injured": 1,
+      "deaths": 0,
+      "selected_as": "highest harm",
+      "text": "2023 Toyota Tacoma's doors are not holding in the open position on a 10 degree pitch of our driveway, slamming shut on the legs of the driver. Passenger side doors are holding open fine, but the driver side doors are closing on me in the driveway. When I took it to the Toyota dealership, I am told that this perfectly fine. Meanwhile, we have never had this problem with any of our other vehicles, since we've lived in this home from 2005.   Can you please tell me what is the pitch that the doors are required to hold by law? The dealership is of no help, and my left leg is constantly covered in b..."
+    },
+    "R-22V422000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2022-06-15 00:00:00",
+      "makes": "LAMBORGHINI",
+      "component": "STRUCTURE",
+      "similarity": 0.801,
+      "text": "The exterior driver-side door handle may not be assembled properly, which can prevent the opening of the driver-side door from the outside.",
+      "consequence": "A person may become trapped which, in the event of an emergency, may increase their risk of injury."
+    },
+    "R-24V485000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2024-06-27 00:00:00",
+      "makes": "MICRO BIRD",
+      "component": "STRUCTURE",
+      "similarity": 0.771,
+      "text": "The rear emergency door exterior handle may unexpectedly break under applied force.",
+      "consequence": "In the event of an emergency, a broken door handle can prevent or delay emergency responders from entering the vehicle, increasing the risk of injury."
+    },
+    "R-20V151000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2020-03-18 00:00:00",
+      "makes": "LAMBORGHINI",
+      "component": "STRUCTURE",
+      "similarity": 0.768,
+      "text": "The interior door handle mechanism may fail, resulting in the vehicle's door being unable to be opened by using the inside door handle.",
+      "consequence": "If a door cannot be opened with the interior handle in the case of an emergency, it can increase the risk of injury for the driver or passenger."
+    },
+    "R-24V484000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2024-06-27 00:00:00",
+      "makes": "MICRO BIRD",
+      "component": "STRUCTURE",
+      "similarity": 0.766,
+      "text": "The rear emergency door exterior handle may unexpectedly break under applied force.",
+      "consequence": "In the event of an emergency, a broken door handle can prevent or delay emergency responders from entering the bus, increasing the risk of injury."
+    },
+    "R-14V239000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2014-05-07 00:00:00",
+      "makes": "FORD",
+      "component": "STRUCTURE",
+      "similarity": 0.745,
+      "text": "Due to an assembly misalignment between the exterior door handle and the door outer panel, the affected vehicles have doors that may be difficult to close or may possibly open while driving.",
+      "consequence": "A door that opens unexpectedly may result in an unrestrained occupant falling from the vehicle, increasing the risk of injury."
+    },
+    "R-23V480000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2023-07-12 00:00:00",
+      "component": "AIR BAGS | STEERING",
+      "similarity": 0.405,
+      "text": "An electrical connection inside the steering column's spiral cable assembly may be insufficiently welded, causing the connection to separate and deactivate the driver's air bag.  As such, these vehicles fail to comply with the requirements of Federal Motor Vehicle Safety Standard number 208, \"Occupant Crash Protection.\""
+    },
+    "R-25V040000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2025-01-29 00:00:00",
+      "component": "AIR BAGS | STEERING",
+      "similarity": 0.4,
+      "text": "An electrical connection inside the steering column's spiral cable assembly may be insufficiently welded, causing the connection to separate and deactivate the driver's air bag.  As such, these vehicles fail to comply with the requirements of Federal Motor Vehicle Safety Standard number 208, \"Occupant Crash Protection.\""
+    },
+    "R-22V520000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2022-07-21 00:00:00",
+      "component": "CHILD SEAT",
+      "similarity": 0.324,
+      "text": "One or more of the individual welds in the upper child seat anchors may be insufficient.  As such, these vehicles fail to comply with the requirements of Federal Motor Vehicle Safety Standard number 225, \"Child Restraint Anchorage System.\""
+    },
+    "T-10234294": {
+      "type": "service_bulletin",
+      "doc": "T-SB-0033-19 Rev",
+      "date": "2023-03-29 00:00:00",
+      "component": "VEHICLE SPEED CONTROL",
+      "similarity": 0.5,
+      "text": "TSB: Some 2016 ? 2023 model year Tacoma vehicles may exhibit a condition where snow or ice builds up between the right or left front door and front fender, preventing the front door from fully opening. Follow the Repair Procedure in this bulletin to address this condition."
+    },
+    "T-10234341": {
+      "type": "service_bulletin",
+      "doc": "T-SB-0033-19 Rev",
+      "date": "2023-03-29 00:00:00",
+      "component": "VEHICLE SPEED CONTROL",
+      "similarity": 0.5,
+      "text": "TSB: Some 2016 ? 2023 model year Tacoma vehicles may exhibit a condition where snow or ice builds up between the right or left front door and front fender, preventing the front door from fully opening. Follow the Repair Procedure in this bulletin to address this condition."
+    },
+    "T-11010082": {
+      "type": "service_bulletin",
+      "doc": "23TE08",
+      "date": "2024-09-18 00:00:00",
+      "component": "STRUCTURE",
+      "similarity": 0.421,
+      "text": "In our continuing efforts to ensure the best in customer satisfaction, Toyota is announcing a Customer Support Program to provide coverage for paint peeling on door frames and front inner fenders on certain 2016-2022 model year Tacoma vehicles. Toyota has received some reports of paint peeling along the exterior door window frames and front inner fenders under the hood on certain Tacoma vehicles with 040 Super White paint color. Although the vehicle paint is covered by Toyota\u2019s New Vehicle Limit..."
+    },
+    "I-EA19001": {
+      "type": "investigation",
+      "opened": "2019-04-19 00:00:00",
+      "closed": "2024-09-19 00:00:00",
+      "recall": "20V024",
+      "component": "AIR BAGS",
+      "text": "Electrical overstress"
+    }
+  },
+  "citation_coverage": 1.0,
+  "generated_by": "template",
+  "attempts": 1,
+  "generated_at": "2026-10-23T01:39:21.409947+00:00",
+  "trace": [
+    "signal_agent: cluster TOYOTA__TACOMA__001 size=64 with 10 evidence complaints",
+    "retrieval_agent: added 12 recall/TSB/investigation documents",
+    "drafting_agent: attempt 1 produced 4 claims via template",
+    "verifier_agent: 4 verified, 0 rejected",
+    "publish: brief saved"
+  ]
+}

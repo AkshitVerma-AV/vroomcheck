@@ -1,0 +1,263 @@
+{
+  "cluster_id": "JEEP__WRANGLER__013",
+  "vehicle": "2021-2025 JEEP WRANGLER",
+  "status": "EMERGING",
+  "title": "Jeep Wrangler Fuel/Propulsion System complaint cluster",
+  "risk_level": "MEDIUM",
+  "summary": "37 complaints cluster around electric, mode, electric mode, power, battery, hybrid. Status: EMERGING.",
+  "claims": [
+    {
+      "text": "Owners of 2021-2025 JEEP WRANGLER describe a recurring fuel/propulsion system problem (electric, mode, electric mode, power, battery, hybrid).",
+      "citations": [
+        "C-11767266",
+        "C-11768554",
+        "C-11765725"
+      ]
+    },
+    {
+      "text": "The most similar past recall (15V602000, HONDA) concerned: Electrical interference may cause the hybrid system to switch into fail-safe mode, disabling the gasoline engine, limiting the vehicle's speed to 40 miles per h",
+      "citations": [
+        "R-15V602000"
+      ]
+    },
+    {
+      "text": "A related manufacturer bulletin exists: False fails on PCR, DBSM and PDCs Stuck Closed or open diagnostics, DTC P2AF5 or P2AF6, leading to NTF and unnecessary replacements. Current controls are not ro",
+      "citations": [
+        "T-11022021"
+      ]
+    }
+  ],
+  "rejected_claims": [],
+  "recommended_action": "Analyst review of the cited complaints; consider a preliminary evaluation.",
+  "evidence": {
+    "C-11767266": {
+      "type": "complaint",
+      "date": "2026-09-27 00:00:00",
+      "model_year": 2021,
+      "component": "FUEL/PROPULSION SYSTEM",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "After completing the Jeep Wrangler 4XE '68C' recall, my Wrangler started having erratic RPM / engine surges.  Moreover, the powertrain system will jump between electric and hybrid gas (ICE) modes while driving at highway speeds when in 'Electric' mode.  It actually does this in Hybrid mode but Electric mode is far worse.  The Jeep did not do this before completing the 68C recall.  The safety issue is erratic RPM and engine surges.  The battery will have plenty of charge and should not need to jump back to hybrid mode.  It did not do this before the 68C recall update.  My car has not lost 'full..."
+    },
+    "C-11768554": {
+      "type": "complaint",
+      "date": "2026-10-02 00:00:00",
+      "model_year": 2022,
+      "component": "FUEL/PROPULSION SYSTEM",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "I would like to report a safety concern with my 2022 Jeep Wrangler 4xe that began after Recall 68C was performed in January 2026. Prior to this recall, my Jeep did not exhibit the behavior I am now experiencing. Since the recall was completed, the vehicle has repeatedly showed unpredictable transitions between the electric motor and gasoline engine, delayed acceleration, loss of expected power, and unusually high engine RPM immediately upon the gasoline engine starting. When driving in electric mode the gasoline engine will sometimes start unexpectedly without what appears to be any normal eng..."
+    },
+    "C-11765725": {
+      "type": "complaint",
+      "date": "2026-09-20 00:00:00",
+      "model_year": 2024,
+      "component": "FUEL/PROPULSION SYSTEM",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "2024 Jeep Wrangler 4xe purchased new November 2024. Recall 68C (NHTSA 25V741000) software update performed December 2025 at 12,524 miles. None of this occurred in the first 13 months of ownership. It all began immediately after 68C.  My 7.6-mile commute (4 miles at 35-45 mph, the rest at 55-60 mph) was previously driven entirely in Electric mode. The vehicle now cannot sustain Electric mode past about 5 miles. It first suffers a sharp power loss where it lags and stops responding to the accelerator, then displays \"Electric Mode Temporarily Unavailable,\" skips the normal warm-up transition, and..."
+    },
+    "C-11747105": {
+      "type": "complaint",
+      "date": "2026-06-29 00:00:00",
+      "model_year": 2021,
+      "component": "POWER TRAIN",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "While driving, regardless of whether at neighborhood or highway speeds, my Jeep Wrangler 4xe suddenly loses drive power without warning. Electric propulsion drops in stages \u2014 to about 50%, then 25% \u2014 then the dash displays \"Electric Mode Temporarily Unavailable\" and the vehicle forces itself into hybrid mode. When this happens, I press the accelerator and get little or no response for several seconds before the gas engine engages. This is a serious safety hazard when merging or pulling into traffic. I have had a couple of close calls due to the lack of acceleration. It is repeatable and occurs..."
+    },
+    "C-11759324": {
+      "type": "complaint",
+      "date": "2026-08-25 00:00:00",
+      "model_year": 2024,
+      "component": "VEHICLE SPEED CONTROL",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "My 2024 Jeep Wrangler 4XE plug-in hybrid had the 68C recall performed at a Jeep Dealer. My vehicle was working flawlessly prior to this recall. After the recall was performed, the vehicle hybrid battery system now loses power when accelerating. For example, driving 45 MPH in electric mode on a level road for a minute causes the speed to reduce regardless of acceleration, with the exception of flooring the accelerator pedal which causes a surge of power from the gas engine, causing the vehicle to lurch forward. This creates an unsafe condition on the roadway as the vehicle cannot be reliably co..."
+    },
+    "C-11762591": {
+      "type": "complaint",
+      "date": "2026-09-07 00:00:00",
+      "model_year": 2024,
+      "component": "UNKNOWN OR OTHER",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "On approximately 95% of my driving trips, my 2024 Jeep Wrangler 4xe suddenly and unpredictably loses acceleration or drive power. When I press the accelerator, the vehicle does not respond or accelerate normally. A warning then appears stating that electric mode is unavailable. After several seconds, the vehicle begins operating normally again. There is no apparent pattern, and this has occurred while traveling approximately 50 to 70 mph.  The malfunction appears to involve the hybrid propulsion or power-control system. The vehicle is available for inspection. It is included in FCA Recall A7ul..."
+    },
+    "C-11765132": {
+      "type": "complaint",
+      "date": "2026-09-17 00:00:00",
+      "model_year": 2022,
+      "component": "FUEL/PROPULSION SYSTEM",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "2022 Jeep Wrangler 4xe always had good power on electric mode as well as hybrid mode (electric/gas). There were no issues merging with traffic on highway, freeway, climbing hills, staying with the flow of traffic in electric mode. Was able to stay in Electric mode 99% of the time. When and if Jeep called for more power, engine came on smoothly with engine idling low having time to warm up and then kicking up revs to create stable propulsion.   However, on 12/30/2025 Jeep Dealership performed the 68C recall with updates to the Jeep. Now the jeep has no power in electric mode and is constantly g..."
+    },
+    "C-11732035": {
+      "type": "complaint",
+      "date": "2026-04-18 00:00:00",
+      "model_year": 2024,
+      "component": "FUEL/PROPULSION SYSTEM",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "My Jeep Wrangler 4xe now has controlled/limited electric propulsion while driving in electric only mode after 68c recall was performed.  With no warning while driving in electric only mode, my vehicle will not accelerate without accelerator press almost to the floor to activate the internal gas engine.  This behavior on a cold run starts out fine, but as the vehicle(electrical system) warms, the limitations come on strong can catch the driver completely off guard if needing to accelerate quickly to merge into traffic or enter freeway on ramps.  This erratic behavior is both dangerous to the dr..."
+    },
+    "R-15V602000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2015-09-25 00:00:00",
+      "makes": "HONDA",
+      "component": "HYBRID PROPULSION SYSTEM",
+      "similarity": 0.547,
+      "text": "Electrical interference may cause the hybrid system to switch into fail-safe mode, disabling the gasoline engine, limiting the vehicle's speed to 40 miles per hour and functioning only on battery power.  Once the battery is discharged, the vehicle will stall.",
+      "consequence": "A vehicle stall increases the risk of a crash."
+    },
+    "R-26V625000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2026-09-29 00:00:00",
+      "makes": "RIVIAN",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.508,
+      "text": "A high voltage battery fastener may have been improperly tightened, causing a loss of drive power.",
+      "consequence": "A loss of drive power increases the risk of a crash."
+    },
+    "R-15V179000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2015-03-27 00:00:00",
+      "makes": "FIAT",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.505,
+      "text": "If the vehicle goes in to limp home mode, incompatible software between Electric Vehicle Control Unit (EVCU) and Battery Pack Control Module (BPCM) may cause the electric propulsion system to fully shut down.",
+      "consequence": "An electric propulsion system shut down will cause a stall-like condition, increasing the risk of a crash."
+    },
+    "R-26V582000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2026-09-09 00:00:00",
+      "makes": "FORD",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.505,
+      "text": "The battery energy control module software may cause an incorrect state of charge to display in the vehicle, or lead to an increased risk of a high voltage battery fire after repeated DC Fast Charging cycles.",
+      "consequence": "An inaccurate state-of-charge reading can lead to an unexpected loss of drive power, increasing the risk of crash. Additionally, a high voltage battery fire increases the risk of injury."
+    },
+    "R-18V684000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2018-10-04 00:00:00",
+      "makes": "TOYOTA",
+      "component": "HYBRID PROPULSION SYSTEM",
+      "similarity": 0.497,
+      "text": "Excessive voltage in the Intelligent Power Module (IPM) within the inverter may cause the hybrid system to shut down, causing the vehicle to stall while being driven.",
+      "consequence": "If the hybrid system shuts down unexpectedly, it can increase the risk of a crash."
+    },
+    "R-24V572000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2024-08-01 00:00:00",
+      "component": "POWER TRAIN",
+      "similarity": 0.419,
+      "text": "The software for the powertrain control module may cause an engine stall, which can result in a loss of drive power."
+    },
+    "R-25V741000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2025-10-30 00:00:00",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.406,
+      "text": "The high voltage battery may fail internally and lead to a vehicle fire while parked or driving."
+    },
+    "R-24V871000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2024-11-19 00:00:00",
+      "component": "ELECTRICAL SYSTEM | EXTERIOR LIGHTING",
+      "similarity": 0.302,
+      "text": "The incorrect dash wiring harness was installed, which can result in inoperative trailer lighting.  As such, these vehicles fail to comply with the requirements of Federal Motor Vehicle Safety Standard number 108, \"Lamps, Reflective Devices, and Associated Equipment.\""
+    },
+    "T-11022021": {
+      "type": "service_bulletin",
+      "doc": "9100649",
+      "date": "2025-08-12 00:00:00",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.38,
+      "text": "False fails on PCR, DBSM and PDCs Stuck Closed or open diagnostics, DTC P2AF5 or P2AF6, leading to NTF and unnecessary replacements. Current controls are not robust against depleted auxiliary battery condition. Please follow SOL S2508000031."
+    },
+    "T-11022023": {
+      "type": "service_bulletin",
+      "doc": "9100651",
+      "date": "2025-08-12 00:00:00",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.38,
+      "text": "False fails on PCR, DBSM and PDCs Stuck Closed or open diagnostics, DTC P2AF5 or P2AF6, leading to NTF and unnecessary replacements. Current controls are not robust against depleted auxiliary battery condition. Please follow SOL S2508000031."
+    },
+    "T-11038526": {
+      "type": "service_bulletin",
+      "doc": "08-366-26",
+      "date": "2026-10-09 00:00:00",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.352,
+      "text": "Flash: Drivetrain Control Module (DTCM) Updates Customers must experience a Malfunction Indicator Lamp (MIL) illumination and the vehicle must SYMPTOM: exhibit/set the following Diagnostic Trouble Code (DTC): \u25cf C147B-92 - Front Axle Disconnect Sensor Performance or Incorrect Operation Customers may comment on one or more of the following: \u25cf 4WD system warning lights, service messages, or flashing indicators are displayed in the Instrument Panel Cluster (IPC). \u25cf The vehicle does not engage 4WD pr..."
+    },
+    "I-PE24024": {
+      "type": "investigation",
+      "opened": "2024-09-06 00:00:00",
+      "closed": "2026-09-24 00:00:00",
+      "recall": "26V363",
+      "component": "STEERING",
+      "text": "Underhood fires"
+    },
+    "I-RQ24012": {
+      "type": "investigation",
+      "opened": "2024-07-05 00:00:00",
+      "closed": "NaT",
+      "recall": NaN,
+      "component": "ELECTRICAL SYSTEM | ENGINE",
+      "text": "Loss of Motive Power"
+    },
+    "I-EA23001": {
+      "type": "investigation",
+      "opened": "2023-03-17 00:00:00",
+      "closed": "NaT",
+      "recall": "24V957",
+      "component": "FUEL SYSTEM, DIESEL",
+      "text": "High pressure fuel pump failure"
+    }
+  },
+  "citation_coverage": 1.0,
+  "generated_by": "template",
+  "attempts": 1,
+  "generated_at": "2026-10-23T01:39:17.418842+00:00",
+  "trace": [
+    "signal_agent: cluster JEEP__WRANGLER__013 size=37 with 8 evidence complaints",
+    "retrieval_agent: added 14 recall/TSB/investigation documents",
+    "drafting_agent: attempt 1 produced 3 claims via template",
+    "verifier_agent: 3 verified, 0 rejected",
+    "publish: brief saved"
+  ]
+}

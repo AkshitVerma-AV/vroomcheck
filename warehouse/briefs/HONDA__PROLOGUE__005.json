@@ -1,0 +1,283 @@
+{
+  "cluster_id": "HONDA__PROLOGUE__005",
+  "vehicle": "2024-2026 HONDA PROLOGUE",
+  "status": "EMERGING",
+  "title": "Honda Prologue Service Brakes complaint cluster",
+  "risk_level": "HIGH",
+  "summary": "16 complaints cluster around braking, brake, automatic, prologue, pedal, brakes. Status: EMERGING.",
+  "claims": [
+    {
+      "text": "Owners of 2024-2026 HONDA PROLOGUE describe a recurring service brakes problem (braking, brake, automatic, prologue, pedal, brakes).",
+      "citations": [
+        "C-11759649",
+        "C-11669381",
+        "C-11670342"
+      ]
+    },
+    {
+      "text": "Some reports involve a crash, fire or injury.",
+      "citations": [
+        "C-11669381",
+        "C-11613932",
+        "C-11764265"
+      ]
+    },
+    {
+      "text": "The most similar past recall (24V349000, MAZDA) concerned: The brakes may activate suddenly due to the automatic braking system falsely detecting certain objects while driving.",
+      "citations": [
+        "R-24V349000"
+      ]
+    },
+    {
+      "text": "A related manufacturer bulletin exists: Owner Notification Letter - Certain 2024 Prologue vehicles may have improperly installed, or missing cavity plugs from the rear chassis harness electrical conne",
+      "citations": [
+        "T-11037714"
+      ]
+    }
+  ],
+  "rejected_claims": [],
+  "recommended_action": "Analyst review of the cited complaints; consider a preliminary evaluation.",
+  "evidence": {
+    "C-11759649": {
+      "type": "complaint",
+      "date": "2026-08-26 00:00:00",
+      "model_year": 2026,
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "In approximately early August 2026 (exact date not recorded), while driving my 2026 Honda Prologue Touring at approximately 20\u201330 mph on a surface street, the vehicle's forward automatic braking system activated without warning and braked hard to a near stop. There was no vehicle, pedestrian, bicyclist, or obstacle in front of me. I was approaching a pedestrian crossing that was empty at the time. Conditions were daylight and warm, dry weather. The deceleration was violent enough that I was thrown forward against the seat belt. My foot was resting lightly on the brake pedal as I approached the..."
+    },
+    "C-11669381": {
+      "type": "complaint",
+      "date": "2025-06-26 00:00:00",
+      "model_year": 2024,
+      "component": "SERVICE BRAKES",
+      "crash": false,
+      "fire": false,
+      "injured": 4,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "While driving my 2024 Honda Prologue, the automatic emergency braking system (part of Honda's Collision Mitigation Braking System) has activated unexpectedly and forcefully multiple times \u2014 with no obstacle or vehicle ahead. The most serious incident occurred on [insert date], while traveling at approximately [insert speed] mph. The vehicle suddenly slammed on the brakes without warning or any visible threat in the road. The sudden stop caused whiplash injuries to my wife and two children, who were passengers in the vehicle. We did not crash, but the vehicle behind us narrowly avoided rear-end..."
+    },
+    "C-11670342": {
+      "type": "complaint",
+      "date": "2025-06-30 00:00:00",
+      "model_year": 2024,
+      "component": "SERVICE BRAKES",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "While driving my 2024 Honda Prologue, the automatic emergency braking system (part of Honda's Collision Mitigation Braking System) has activated unexpectedly and forcefully multiple times \u2014 with no obstacle or vehicle ahead. The most serious incident occurred on 6/28/2024, while traveling at approximately 70 mph. The vehicle suddenly slammed on the brakes without warning or any visible threat in the road. We did not crash, but the vehicle behind us narrowly avoided rear-ending us. This also happens about 50% of the time we reverse the vehicle. Given the potential severity of this defect \u2014 espe..."
+    },
+    "C-11727278": {
+      "type": "complaint",
+      "date": "2026-03-26 00:00:00",
+      "model_year": 2025,
+      "component": "SERVICE BRAKES",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "The issue involves a failure of the braking system and related electronic control systems in a 2025 Honda Prologue.   Prior to the failure, the vehicle displayed repeated warning messages including \u201cSingle Pedal Unavailable\u201d and \u201cAuto Hold Unavailable.\u201d These warnings began appearing within approximately three weeks of taking delivery and became more frequent over time.  The primary safety incident occurred while driving on a highway. Multiple warning indicators appeared simultaneously, including battery and maintenance alerts, and the vehicle began to decelerate automatically. When the brake ..."
+    },
+    "C-11638500": {
+      "type": "complaint",
+      "date": "2025-01-25 00:00:00",
+      "model_year": 2024,
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "The automatic emergency braking (AEB) system or collision avoidance feature in my 2024 Honda Prologue has malfunctioned. The car abruptly applies the brakes when backing out of my driveway, and also engages when driving forward and getting too close to other vehicles or when changing lanes, even when there\u2019s sufficient space. The braking is sudden and forceful, making it difficult to control the vehicle.  This issue poses a serious safety risk, as the car\u2019s automatic braking can cause me to be rear-ended by vehicles behind me when stopping unexpectedly. The system may also cause a collision wh..."
+    },
+    "C-11742950": {
+      "type": "complaint",
+      "date": "2026-06-09 00:00:00",
+      "model_year": 2024,
+      "component": "SERVICE BRAKES",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "Description of Safety Defect: The Automatic Emergency Braking (AEB) / Forward Collision Avoidance system is severely malfunctioning. On multiple occasions, the vehicle has experienced \"phantom braking\"\u2014abruptly slamming on the brakes for no reason whatsoever.  There were no obstacles, pedestrians, or vehicles ahead to trigger the system. This malfunction is happening at high speeds on major highways.  Safety Risk and Impact: This issue represents an immediate and terrifying safety hazard. Unexpectedly slowing to a sudden stop at highway speeds completely compromises vehicle control and leaves ..."
+    },
+    "C-11636658": {
+      "type": "complaint",
+      "date": "2025-01-17 00:00:00",
+      "model_year": 2024,
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "Specifically, I have encountered recurring problems with the vehicle's automatic braking system, as well as issues with the Honda Prologue app, both of which I believe compromise the vehicle's safety and performance. \u2028The vehicle's automatic braking system appears to be malfunctioning, as it has activated unexpectedly on multiple occasions, leading to near-miss accidents. On at least three occasions, the vehicle\u2019s brakes have engaged without cause, even in situations where there is no obstruction or \u201cphantom\u201d vehicle detected. This automatic braking has not only been inappropriate but also pos..."
+    },
+    "C-11641229": {
+      "type": "complaint",
+      "date": "2025-02-06 00:00:00",
+      "model_year": 2024,
+      "component": "SERVICE BRAKES",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "I have encountered recurring problems with the vehicle's automatic braking system, as well as issues with the Honda Prologue app, both of which I believe compromise the vehicle's safety and performance.\u2028The vehicle's automatic braking system appears to be malfunctioning, as it has activated unexpectedly on multiple occasions, leading to near-miss accidents. At least three occasions, the vehicle\u2019s brakes have engaged without cause, even in situations where there is no obstruction or \u201cphantom\u201d vehicle detected. This automatic braking has not only been inappropriate but also posed a significant s..."
+    },
+    "C-11613932": {
+      "type": "complaint",
+      "date": "2024-09-11 00:00:00",
+      "model_year": 2024,
+      "component": "SERVICE BRAKES",
+      "crash": true,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "highest harm",
+      "text": "The contact owned a 2024 Honda Prologue. The contact stated that while stopped at an intersection and attempting to make a right turn, the steering wheel was frozen and the vehicle began to independently accelerate at an unknown speed. The contact stated that he was depressing the brake pedal but the vehicle was not stopping. The contact stated that he crashed into a vehicle in front of his vehicle on the other vehicle's passenger side front door. The air bag deployed. The contact stated he was not aware of any warning lights. The contact stated that the police and emergency service vehicles a..."
+    },
+    "C-11764265": {
+      "type": "complaint",
+      "date": "2026-09-15 00:00:00",
+      "model_year": 2024,
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "crash": true,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "highest harm",
+      "text": "I was driving a 2024 Honda Prologue Elite and was coming to an ordinary stop at a safe distance behind another car at a red light.  With my foot continuously and firmly pressed on the brake pedal, a brake alert/warning appeared on the dashboard screen accompanied by beeping, and the emergency brakes automatically engaged, stopping the car abruptly.  Then, almost immediately,  the vehicle suddenly lurched forward without warning, striking the vehicle ahead of me. I kept my foot firmly on the brake as the warning, beeping, and auto-brake activated again, and the vehicle lurched forward a second ..."
+    },
+    "C-11739358": {
+      "type": "complaint",
+      "date": "2026-05-21 00:00:00",
+      "model_year": 2025,
+      "component": "SERVICE BRAKES",
+      "crash": true,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "highest harm",
+      "text": "While driving normally, my 2025 Honda Prologue experienced an immediate, catastrophic mechanical and electronic failure in both the steering and braking systems. The steering wheel completely locked up/failed to respond, and the brakes became completely non-functional simultaneously, causing an absolute loss of control of the vehicle. Due to this sudden system failure, the vehicle veered off course and crashed, resulting in severe structural damage, complete destruction of the front passenger-side suspension, and rendering the vehicle a total loss. American Honda Motor Co. Corporate was immedi..."
+    },
+    "R-24V349000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2024-05-16 00:00:00",
+      "makes": "MAZDA",
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "similarity": 0.623,
+      "text": "The brakes may activate suddenly due to the automatic braking system falsely detecting certain objects while driving.",
+      "consequence": "Unexpected braking increases the risk of a crash."
+    },
+    "R-26V561000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2026-09-01 00:00:00",
+      "makes": "CHRYSLER",
+      "component": "ELECTRONIC STABILITY CONTROL (ESC)",
+      "similarity": 0.603,
+      "text": "The brake pedal position sensor capacitor may be cracked, which can cause a loss of electronic stability control. As such, these vehicles fail to comply with the requirements of Federal Motor Vehicle Safety Standard number 126, \"Electronic Stability Control Systems.\"",
+      "consequence": "A loss of electronic stability control increases the risk of a crash."
+    },
+    "R-18V938000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2018-12-31 00:00:00",
+      "makes": "ARCIMOTO",
+      "component": "SERVICE BRAKES, HYDRAULIC",
+      "similarity": 0.59,
+      "text": "The affected motorcycles do not have a service brake warning light to warn the operator if there is a brake system malfunction.  As such, these vehicles fail to comply with Federal Motor Safety Standard (FMVSS) number 122, \"Motorcycle brake systems.\"",
+      "consequence": "If the operator unknowingly operates the motorcycle with a problem in the brake system, there would be an increased risk of a crash."
+    },
+    "R-18V937000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2018-12-31 00:00:00",
+      "makes": "ARCIMOTO",
+      "component": "SERVICE BRAKES, HYDRAULIC",
+      "similarity": 0.565,
+      "text": "The affected motorcycles were built with a front/rear split brake system instead of a left/right split brake system.  In the event of a front brake system failure, the rear brake system may not allow the vehicle to meet the minimum stopping distance requirements.  As such, these vehicles fail to comply with Federal Motor Safety Standard (FMVSS) number 122, \"Motorcycle brake systems.\"",
+      "consequence": "If the brakes cannot stop the motorcycle within the distance required, there is an increased risk of a crash."
+    },
+    "R-15V678000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2015-10-20 00:00:00",
+      "makes": "HYUNDAI",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.561,
+      "text": "The affected vehicles are equipped with an Antilock Braking System (ABS) warning light intended to warn the driver if there is an ABS malfunction. In the event of an ABS malfunction, the Brake System warning light will illuminate, but the ABS warning light will not illuminate.  Since the vehicles have ABS malfunction lights that do not illuminate, these vehicles fail to comply with the requirements of Federal Motor Vehicle Safety Standard (FMVSS) number 135, \"Light Vehicle Brake Systems.\"",
+      "consequence": "If the driver is alerted there is a brake system malfunction, but not specifically with the ABS system, the driver may operate the vehicle unaware that the vehicle's brakes may lock up during hard braking, increasing the risk of a crash."
+    },
+    "R-26V112000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2026-02-26 00:00:00",
+      "component": "BACK OVER PREVENTION | ELECTRICAL SYSTEM",
+      "similarity": 0.416,
+      "text": "Due to a software error, the instrument panel display may fail. Additionally, a software error may cause the rearview camera to display a blank screen when the vehicle is in reverse. As such, these vehicles fail to comply with the requirements of Federal Motor Vehicle Safety Standard (FMVSS) numbers 101, \"Control and Displays,\" 111, \"Rear Visibility,\" and 305, \"Electric-Powered Vehicles.\""
+    },
+    "R-24V540000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2024-07-18 00:00:00",
+      "component": "SUSPENSION",
+      "similarity": 0.351,
+      "text": "The right front lower control arm may contain a manufacturing defect that can cause it to fracture."
+    },
+    "R-26V306000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2026-05-14 00:00:00",
+      "component": "BACK OVER PREVENTION",
+      "similarity": 0.263,
+      "text": "The rearview camera screen may display a distorted or blank image."
+    },
+    "T-11037714": {
+      "type": "service_bulletin",
+      "doc": "ONL6WM092026P",
+      "date": "2026-09-25 00:00:00",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.397,
+      "text": "Owner Notification Letter - Certain 2024 Prologue vehicles may have improperly installed, or missing cavity plugs from the rear chassis harness electrical connector."
+    },
+    "T-11034196": {
+      "type": "service_bulletin",
+      "doc": "AEBM06262026902",
+      "date": "2026-06-26 00:00:00",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.388,
+      "text": "Dealer Message - Due to improper manufacturing, the rear chassis harness connector may not be properly sealed and only partially seated. An unsealed connector in a half set condition may allow for water or debris intrusion, potentially causing corrosion or damage to wire harness connections which may lead to loss of brake assist, parking brake stuck on/off, or inconsistent unit operation while driving."
+    },
+    "T-11034197": {
+      "type": "service_bulletin",
+      "doc": "A26-032",
+      "date": "2026-06-26 00:00:00",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.376,
+      "text": "Service Bulletin - Certain 2024 Prologue vehicles may have improperly installed or missing cavity plugs from the rear chassis harness electrical connector."
+    }
+  },
+  "citation_coverage": 1.0,
+  "generated_by": "template",
+  "attempts": 1,
+  "generated_at": "2026-10-23T01:39:19.184094+00:00",
+  "trace": [
+    "signal_agent: cluster HONDA__PROLOGUE__005 size=16 with 11 evidence complaints",
+    "retrieval_agent: added 11 recall/TSB/investigation documents",
+    "drafting_agent: attempt 1 produced 4 claims via template",
+    "verifier_agent: 4 verified, 0 rejected",
+    "publish: brief saved"
+  ]
+}

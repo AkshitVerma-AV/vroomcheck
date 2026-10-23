@@ -1,0 +1,319 @@
+{
+  "cluster_id": "JEEP__GRAND-CHEROKEE__002",
+  "vehicle": "2015-2025 JEEP GRAND CHEROKEE",
+  "status": "EMERGING",
+  "title": "Jeep Grand Cherokee Forward Collision Avoidance complaint cluster",
+  "risk_level": "HIGH",
+  "summary": "21 complaints cluster around collision, braking, brake, forward collision, forward, cherokee. Status: EMERGING.",
+  "claims": [
+    {
+      "text": "Owners of 2015-2025 JEEP GRAND CHEROKEE describe a recurring forward collision avoidance problem (collision, braking, brake, forward collision, forward, cherokee).",
+      "citations": [
+        "C-11743996",
+        "C-11759932",
+        "C-11160825"
+      ]
+    },
+    {
+      "text": "Some reports involve a crash, fire or injury.",
+      "citations": [
+        "C-11743996",
+        "C-10865011",
+        "C-11755946"
+      ]
+    },
+    {
+      "text": "The most similar past recall (24V125000, LEXUS, TOYOTA) concerned: Unexpected vehicle movement may occur when the vehicle is in neutral and the brakes are not applied.",
+      "citations": [
+        "R-24V125000"
+      ]
+    },
+    {
+      "text": "A related manufacturer bulletin exists: Auto Emergency Braking (AEB) Unavailable \u2013 Service Required Message In Cluster",
+      "citations": [
+        "T-11037355"
+      ]
+    }
+  ],
+  "rejected_claims": [],
+  "recommended_action": "Analyst review of the cited complaints; consider a preliminary evaluation.",
+  "evidence": {
+    "C-11743996": {
+      "type": "complaint",
+      "date": "2026-06-14 00:00:00",
+      "model_year": 2024,
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "crash": true,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "On XXX, at approximately 8:45 AM in [XXX], my wife was driving our 2025 Jeep Grand Cherokee 4xe. She was stopped at a red traffic light and, when the light turned green, proceeded to make a normal left turn through the intersection.  While approximately halfway through the intersection, the vehicle unexpectedly displayed a forward collision warning (\"BRAKE!\") and aggressively applied the Automatic Emergency Braking system. The weather was clear and sunny, and there was no apparent vehicle, pedestrian, obstacle, or other hazard in the Jeep's path that would have justified an emergency braking i..."
+    },
+    "C-11759932": {
+      "type": "complaint",
+      "date": "2026-08-27 00:00:00",
+      "model_year": 2025,
+      "component": "SERVICE BRAKES",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "While driving my 2025 Jeep Grand Cherokee 4xe, the vehicle suddenly and unexpectedly applied the brakes very hard without any braking input from me. There was no apparent obstacle, vehicle, or other condition in front of me that would have required emergency braking.  The braking was extremely abrupt and forceful. The sudden deceleration caused my seat belt to lock and restrain me hard enough to cause significant bruising and pain across my chest and reconstructed breasts. I recently underwent a double mastectomy with breast reconstruction, which made the impact and resulting injury particular..."
+    },
+    "C-11160825": {
+      "type": "complaint",
+      "date": "2018-12-11 00:00:00",
+      "model_year": 2015,
+      "component": "POWER TRAIN",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "I HAVE A SERIOUS SAFETY ISSUE WITH MY 2015 JEEP GRAND CHEROKEE. I HAVE BROUGHT IT TO THE DEALER FOR THIS PROBLEM MORE THAN ONCE AND THEY ARE NOT ABLE TO IDENTIFY ANY ISSUES WITH THE VEHICLE. THEY HAVE NOT BEEN ABLE TO REPLICATE MY EXPERIENCE. IN SHORT ON A FEW OCCASIONS WHILE DRIVING AT LOW SPEED THE VEHICLE SEEMS TO CHANGE GEAR AND ACCELERATE. I WOULD BEST DESCRIBE IT AS A SURGE. THIS PAST SATURDAY (12/08/18), WHILE COMING TO A STOP A THREE WAY INTERSECTION MY JEEP ACCELERATED WITHOUT WARNING. I ALREADY HAD BEEN DEPRESSING THE BRAKE WHEN THE SURGE HAPPENED AND SINCE I HAVE EXPERIENCED THIS BE..."
+    },
+    "C-10865011": {
+      "type": "complaint",
+      "date": "2016-05-15 00:00:00",
+      "model_year": 2015,
+      "component": "POWER TRAIN",
+      "crash": true,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "THERE ARE A TOTAL OF THREE INCIDENTS THAT HAD OCCURRED, ALL WITHIN A COUPLE MONTHS OF EACH OTHER. THE FIRST INCIDENT  HAPPENED LATE DECEMBER/ EARLY JANUARY. FINISHING UP WORK I LEAVE THE BUILDING AND START MY CAR UP. WHEN I PUT IT IN REVERSE, TO PULL OUT, THE JEEP LURCHED VIOLENTLY FORWARD COLLIDING WITH THE CEMENT BARRIER. I TOOK IT TO THE DEALERSHIP WHERE THEY HELD ON TO MY CAR FOR SEVERAL WEEKS, REFUSING TO DISCLOSE ANY INFORMATION TO ME ABOUT THE STATUS OF MY VEHICLE. ONCE THEY RETURNED MY JEEP TO ME THEY CONCLUDED NOTHING WAS WRONG, AND DECLINED ANY FINANCIAL ASSISTANCE.      THE SECOND I..."
+    },
+    "C-10724290": {
+      "type": "complaint",
+      "date": "2015-06-09 00:00:00",
+      "model_year": 2015,
+      "component": "SERVICE BRAKES",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "I OWN A 2015 JEEP GRAND CHEROKEE OVERLAND.  I WAS INFORMED OF THE NHTSA RESEARCH INTO THE 2014 JEEP GRAND CHEROKEE AND THE PROBLEMS INDIVIDUALS WERE HAVING WITH THE COLLISION WARNING SYSTEM AND THE AUTOMATIC BREAKING.  I HAVE EXPERIENCED THE SAME PROBLEM TWO TIMES.  THERE WAS NO VEHICLE OR OBSTACLE CLOSE TO ME AND THE COLLISION AVOIDANCE SYSTEM INITIATED THE AUTMOATIC BREAKING SYSTEM WHILE DRIVING DOWN AN INTERSTATE HIGHWAY.  IT DID NOT CAUSE AN ACCIDENT, THANKFULLY.  AFTER THE SECOND INCIDENT, I DISABLED THE FORWARD COLLISION WARNING SYSTEM DUE TO MY FEAR THAT IT WOULD HAPPEN AGAIN AND CAUSE ..."
+    },
+    "C-11722121": {
+      "type": "complaint",
+      "date": "2026-03-04 00:00:00",
+      "model_year": 2022,
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "I own a 2022 Jeep Grand Cherokee that is experiencing unintended automatic braking while driving. The crash detection/forward collision warning system shows a constant warning light on the dashboard. While driving under normal conditions with no obstacles present, the vehicle will suddenly brake on its own. This has occurred multiple times and now happens almost daily. The problem first occurred on November 26, 2024, the same day I purchased the vehicle used with approximately 34,158 miles. The issue has continued as the mileage has increased to approximately 51,500 miles. This creates a serio..."
+    },
+    "C-11755946": {
+      "type": "complaint",
+      "date": "2026-08-10 00:00:00",
+      "model_year": 2025,
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "crash": true,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "2025 JEEP GRAND CHEROKEE \u2013 UNINTENDED ACCELERATION, ADAPTIVE CRUISE CONTROL AND UNEXPECTED BRAKING  I am reporting multiple intermittent safety-related problems with my 2025 Jeep Grand Cherokee, VIN [XXX], involving Adaptive Cruise Control (ACC), unexpected acceleration, and unexpected braking.  While driving on the highway with ACC activated, the vehicle has on multiple occasions behaved unpredictably. When another vehicle enters or cuts into my lane, my Grand Cherokee does not always reduce speed as expected. On some occasions, the vehicle has accelerated even though another vehicle was dire..."
+    },
+    "C-11573247": {
+      "type": "complaint",
+      "date": "2024-02-21 00:00:00",
+      "model_year": 2023,
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "I have a 2023 Jeep Grand Cherokee 4WD Overland, If the NHTSA would do a web search this issue is a common issue that many people are complaining and concerned about. The forward collision warning with automatic braking is NOT functioning or has been turned down where it is completely ineffective or is not functioning at all. I have had my vehicle in two different Jeep dealerships and have been told that the system is functioning and not showing any error codes. I have an active case working under Jeep (Case # [XXX]) and my vehicle was inspected by a Jeep representative on [XXX], who also claim..."
+    },
+    "C-11546942": {
+      "type": "complaint",
+      "date": "2023-09-27 00:00:00",
+      "model_year": 2017,
+      "component": "AIR BAGS",
+      "crash": true,
+      "fire": false,
+      "injured": 2,
+      "deaths": 0,
+      "selected_as": "highest harm",
+      "text": "This is [XXX] . On September 14, 2023 had a very big crash with our 2017 Jeep Grand Cherokee. My husband and Granddaughter were in the crash.  Everyone is okay but the Jeep is totaled. At 7:00am, the Jeep accelerated out of control, my husband was trying applying the breaks, but the accelerator over powered the brake system.  The car reached speeds of between 74-83 mph based on the Life 360 app our both my husband and granddaughter have on their phones.This occurred in downtown Lebanon KY during the morning school hours.  He was unable to stop or slow down the Jeep.  It resulted in him running..."
+    },
+    "C-10983947": {
+      "type": "complaint",
+      "date": "2017-05-07 00:00:00",
+      "model_year": 2015,
+      "component": "UNKNOWN OR OTHER",
+      "crash": true,
+      "fire": false,
+      "injured": 1,
+      "deaths": 0,
+      "selected_as": "highest harm",
+      "text": "I SHIFTED MY CAR FROM DRIVE TO PARK AND EXITED THE VEHICLE PARKED IN A GAS STATION PARKED LOT. AS I EXITED THE DRIVERS SEAT AND BEGUN TO STEP AWAY I NOTICED THE JEEP WAS IN MOTION (ROLLING BACKWARDS, TOWARDS ME JUST STEPS AWAY FROM THE VEHICLE).BECAUSE THE DRIVER SIDE DOOR WAS OPEN IT KNOCKED ME DOWN ON MY FACE AND THEN ROLLED OVER MY LEGS WITH THE FRONT DRIVERS SIDE WHEEL. THE JEEP CONTINUED TO ROLL UNTIL IT CRASHED INTO A FUEL TRUCK PARKED IN THE GAS STATION LOT WHERE I HAD PARKED."
+    },
+    "C-11287558": {
+      "type": "complaint",
+      "date": "2019-12-06 00:00:00",
+      "model_year": 2020,
+      "component": "SERVICE BRAKES",
+      "crash": true,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "highest harm",
+      "text": "I WAS SLOWLY BACKING INTO A DRIVEWAY WHEN THE JEEP GRAND CHEROKEE SUDDENLY ACCELERATED ON ITS OWN. I REPEATEDLY HIT THE BRAKE PEDAL BUT THE JEEP WOULDN'T STOP; INSTEAD IT KEPT GOING FASTER. IT SMASHED INTO THE GARAGE DOOR AND THE BRICK WALL OF THE GARAGE, DEMOLISHING THEM. THE JEEP WAS BRAND NEW WITH ONLY 500 MILES DRIVEN, AND IT WAS EQUIPPED WITH A COMPLETE SAFETY PACKAGE THAT SHOULD HAVE AUTOMATICALLY STOPPED IT BEFORE AN IMPENDING IMPACT BUT IT DID NOT DO SO. THIS WAS AN EXTREMELY TERRIFYING EXPERIENCE AND IT FELT LIKE A NIGHTMARE."
+    },
+    "C-11324833": {
+      "type": "complaint",
+      "date": "2020-05-16 00:00:00",
+      "model_year": 2016,
+      "component": "POWER TRAIN",
+      "crash": true,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "highest harm",
+      "text": "BACKING UP TO PARKING SPOT A HOME, FROM A DEAD STOP I GOOSED THE THROTTLE TO GO UP A SLIGHT INCLINE AND THROTTLE STUCK WIDE OPEN IN REVERSE. STOOD ON THE BRAKE FOR 20FT WHILE FIGHTING THE THROTTLE, HIT THE SIDE OF GARAGE AND THREW IT INTO DRIVE AND CONTINUED TO STAND ON THE BRAKES FOR ANOTHER 40FT IN DRIVE. AFTER SMASHING THE IGNITION BUTTON FRANTICALLY ABOUT A DOZEN TIMES AND ALSO ENGAGING THE EMERGENCY BRAKE, THE JEEP SHUT OFF.  THIS ALL HAPPENED IN OUR DRIVEWAY THAT OUR CHILDREN PLAY ON OFTEN. LUCKILY NO ONE WAS HURT, AND NO ONE WAS IN THE VEHICLE WITH ME BUT THIS COULD HAVE BEEN WAY WORSE...."
+    },
+    "R-24V125000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2024-02-21 00:00:00",
+      "makes": "LEXUS, TOYOTA",
+      "component": "POWER TRAIN",
+      "similarity": 0.583,
+      "text": "Unexpected vehicle movement may occur when the vehicle is in neutral and the brakes are not applied.",
+      "consequence": "Unexpected vehicle movement can increase the risk of a crash."
+    },
+    "R-19V561000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2019-07-26 00:00:00",
+      "makes": "APRILIA, MOTO GUZZI",
+      "component": "SERVICE BRAKES, HYDRAULIC",
+      "similarity": 0.557,
+      "text": "Due to a problem with the front brake master cylinder, the front brakes may drag or apply, causing the motorcycle to unexpectedly slow down or stop completely without activating the rear brake light.",
+      "consequence": "Unexpectedly slowing down or stopping while driving with no warning to following traffic can increase the risk of a crash."
+    },
+    "R-24V349000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2024-05-16 00:00:00",
+      "makes": "MAZDA",
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "similarity": 0.555,
+      "text": "The brakes may activate suddenly due to the automatic braking system falsely detecting certain objects while driving.",
+      "consequence": "Unexpected braking increases the risk of a crash."
+    },
+    "R-14V438000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2014-07-21 00:00:00",
+      "makes": "JEEP",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.541,
+      "text": "This defect can affect the safe operation of the airbag system.  Until this recall is performed, drivers should adjust their seat to allow clearance between the driver's knee and the ignition key, and remove all items from their key ring, leaving only the vehicle key.    Chrysler Group LLC (Chrysler) is recalling certain model year 2005-2007 Jeep Grand Cherokee vehicles manufactured February 11, 2004, to July 5, 2007, and 2006-2007 Jeep Commander vehicles manufactured January 31, 2005, to July 5...",
+      "consequence": "If the ignition key inadvertently moves into the OFF or ACCESSORY position, the engine will turn off, which will then depower various key safety systems including but not limited to air bags, power steering, and power braking. Loss of functionality o..."
+    },
+    "R-19V907000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2019-12-19 00:00:00",
+      "makes": "MAZDA",
+      "component": "FORWARD COLLISION AVOIDANCE",
+      "similarity": 0.54,
+      "text": "The Smart Brake System (SBS) can falsely detect an obstacle while driving, activating the automatic emergency braking system and suddenly stopping the vehicle.",
+      "consequence": "Stopping the vehicle unexpectedly increases the risk of a crash."
+    },
+    "R-16V240000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2016-04-25 00:00:00",
+      "component": "POWER TRAIN",
+      "similarity": 0.465,
+      "text": "The affected vehicles, equipped with an eight-speed automatic transmission and a monostable gear selector, may not adequately warn the driver when driver's door is opened and the vehicle is not in PARK, allowing them to exit the vehicle while the vehicle is still in gear."
+    },
+    "R-24V838000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2024-11-07 00:00:00",
+      "component": "SERVICE BRAKES, HYDRAULIC",
+      "similarity": 0.461,
+      "text": "A malfunction in the antilock-brake system (ABS) module may incorrectly illuminate the brake lights and disable the ABS and electronic stability control (ESC).  In addition, the vehicle operator may be able to start and shift out of Park without the brake pedal being applied."
+    },
+    "R-15V469000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2015-07-27 00:00:00",
+      "component": "SUSPENSION",
+      "similarity": 0.436,
+      "text": "The affected vehicles may be equipped with rear lower control arms that may have been incorrectly heat treated. This may cause the rear lower control arm to fracture."
+    },
+    "T-11037355": {
+      "type": "service_bulletin",
+      "doc": "S238A000038 REV.D",
+      "date": "2026-09-11 00:00:00",
+      "component": "SERVICE BRAKES",
+      "similarity": 0.368,
+      "text": "Auto Emergency Braking (AEB) Unavailable \u2013 Service Required Message In Cluster"
+    },
+    "T-11034382": {
+      "type": "service_bulletin",
+      "doc": "9100848",
+      "date": "2026-06-25 00:00:00",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.346,
+      "text": "If the Driver/Passenger Seat Adjsuter Switch is inoperable, seat back will not move or seat moves on its own: 1.Which function is not operating properly? *Forward/Backward *Recline Forward *Recline Backward *Height Adjustment *Multiple Functions 2.Is the concern constant or Intermittent? 3.If intermittent, how often does it occur? Daily, Weekly, Randomly 4.Does the seat move on its own without pressing any switch? Yes / No 5.Does the issue occur only while driving, only at key-on, or while the v..."
+    },
+    "T-11034317": {
+      "type": "service_bulletin",
+      "doc": "08-240-26",
+      "date": "2026-06-16 00:00:00",
+      "component": "ELECTRICAL SYSTEM",
+      "similarity": 0.345,
+      "text": "Flash: Trailer Tow Module (TTM) Updates Customers may comment on one or more of the following: SYMPTOM: \u25cf If the vehicle is traveling at less than 05 kph (03 mph) and the brake pedal is pressed, then both trailer turn lights will flash for two milliseconds. \u25cf If the vehicle is traveling at less than 05 kph (03 mph) and one turn light is activated, then the opposite trailer turn light will flash for 20 milliseconds. This bulletin involves reprogramming the TTM with the latest available software."
+    },
+    "I-RQ25005": {
+      "type": "investigation",
+      "opened": "2025-12-11 00:00:00",
+      "closed": "NaT",
+      "recall": "26V051",
+      "component": "SUSPENSION",
+      "text": "Recall 23V-413 Post Remedy Failures"
+    },
+    "I-EA23001": {
+      "type": "investigation",
+      "opened": "2023-03-17 00:00:00",
+      "closed": "NaT",
+      "recall": "24V957",
+      "component": "FUEL SYSTEM, DIESEL",
+      "text": "High pressure fuel pump failure"
+    },
+    "I-DP22005": {
+      "type": "investigation",
+      "opened": "2023-01-27 00:00:00",
+      "closed": "2023-08-07 00:00:00",
+      "recall": "22V063000",
+      "component": "ELECTRICAL SYSTEM",
+      "text": "Pedestrian alert sounds"
+    }
+  },
+  "citation_coverage": 1.0,
+  "generated_by": "template",
+  "attempts": 1,
+  "generated_at": "2026-10-23T01:39:25.444488+00:00",
+  "trace": [
+    "signal_agent: cluster JEEP__GRAND-CHEROKEE__002 size=21 with 12 evidence complaints",
+    "retrieval_agent: added 14 recall/TSB/investigation documents",
+    "drafting_agent: attempt 1 produced 4 claims via template",
+    "verifier_agent: 4 verified, 0 rejected",
+    "publish: brief saved"
+  ]
+}
