@@ -1,4 +1,5 @@
--- One row per manufacturer communication / service bulletin touching an in-scope model year.
+-- One row per manufacturer communication / service bulletin touching an in-scope
+-- (passenger vehicle, model year >= 2015) vehicle.
 select
     nhtsa_id,
     any_value(tsb_document_id)                          as tsb_document_id,
@@ -9,4 +10,5 @@ select
     max(summary)                                        as summary
 from {{ ref('stg_tsbs') }}
 where model_year >= {{ var('min_model_year') }}
+  and is_passenger_vehicle
 group by nhtsa_id

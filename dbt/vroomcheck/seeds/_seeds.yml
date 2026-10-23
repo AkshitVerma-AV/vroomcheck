@@ -1,0 +1,36 @@
+version: 2
+
+seeds:
+  - name: component_ontology
+    description: NHTSA top-level component -> system group, severity weight and scope flag.
+    columns:
+      - name: component_top
+        tests: [unique, not_null]
+
+  - name: passenger_makes
+    description: Allow-list of passenger-vehicle makes. Every other make (RVs, buses, motorcycles, trucks, trailers) is out of scope.
+    columns:
+      - name: make
+        tests: [unique, not_null]
+
+  - name: non_passenger_models
+    description: Models sold under a passenger make that are not passenger vehicles (motorcycles, medium-duty trucks, stripped chassis). model_pattern is a SQL LIKE pattern.
+    columns:
+      - name: make
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('passenger_makes'), field: make}}
+      - name: model_pattern
+        tests: [not_null]
+
+  - name: make_aliases
+    description: Spelling variants of a make mapped to the canonical name.
+    columns:
+      - name: alias
+        tests: [unique, not_null]
+
+  - name: model_aliases
+    description: Spelling variants of a model (within a make) mapped to the canonical name.
+    columns:
+      - name: alias
+        tests: [unique, not_null]

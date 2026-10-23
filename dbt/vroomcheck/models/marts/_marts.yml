@@ -11,7 +11,12 @@ models:
           - not_null
           - relationships: {arguments: {to: ref('dim_vehicle'), field: vehicle_key}}
       - name: received_date
-        tests: [not_null]
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_date'), field: date_day}}
+      - name: primary_component
+        tests:
+          - relationships: {arguments: {to: ref('dim_component'), field: component_top}}
       - name: narrative
         tests: [not_null]
 
@@ -20,38 +25,100 @@ models:
       - name: odino
         tests:
           - relationships: {arguments: {to: ref('fct_complaints'), field: odino}}
+      - name: component_top
+        tests:
+          - relationships: {arguments: {to: ref('dim_component'), field: component_top}}
+
+  - name: bridge_complaint_recall_citation
+    description: Every recall campaign number an owner cites in a complaint narrative.
+    columns:
+      - name: odino
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('fct_complaints'), field: odino}}
+      - name: campno
+        tests:
+          - not_null
+          # vehicle campaigns cited by owners that do not exist (typos); other types are out of scope
+          - relationships:
+              arguments: {to: ref('fct_recalls'), field: campno}
+              config: {severity: warn, where: "campno like '__V%'"}
 
   - name: fct_recalls
-    description: One row per vehicle recall campaign - the ground truth for back-testing.
+    description: One row per passenger-vehicle recall campaign - the ground truth for back-testing.
     columns:
       - name: campno
         tests: [unique, not_null]
       - name: recall_date
-        tests: [not_null]
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_date'), field: date_day}}
+      - name: investigation_id
+        tests:
+          - relationships: {arguments: {to: ref('fct_investigations'), field: action_number}}
 
   - name: bridge_recall_vehicle
     columns:
       - name: campno
         tests:
           - relationships: {arguments: {to: ref('fct_recalls'), field: campno}}
+      - name: vehicle_key
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_vehicle'), field: vehicle_key}}
 
   - name: fct_investigations
     columns:
       - name: action_number
         tests: [unique, not_null]
+      - name: campno
+        tests:
+          - relationships: {arguments: {to: ref('fct_recalls'), field: campno}}
       - name: investigation_type
         tests:
           - accepted_values:
               arguments: {values: ['PE', 'EA', 'DP', 'RQ', 'AQ', 'RP', 'SQ', 'EQ', 'ID', 'TA']}
               config: {severity: warn}
 
+  - name: bridge_investigation_vehicle
+    columns:
+      - name: action_number
+        tests:
+          - relationships: {arguments: {to: ref('fct_investigations'), field: action_number}}
+      - name: vehicle_key
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_vehicle'), field: vehicle_key}}
+
+  - name: bridge_investigation_recall
+    description: Investigation x recall campaign it led to (many-to-many).
+    columns:
+      - name: action_number
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('fct_investigations'), field: action_number}}
+      - name: campno
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('fct_recalls'), field: campno}}
+
   - name: fct_tsbs
     columns:
       - name: nhtsa_id
         tests: [unique, not_null]
 
+  - name: bridge_tsb_vehicle
+    columns:
+      - name: nhtsa_id
+        tests:
+          - relationships: {arguments: {to: ref('fct_tsbs'), field: nhtsa_id}}
+      - name: vehicle_key
+        tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_vehicle'), field: vehicle_key}}
+
   - name: dim_vehicle
-    description: Conformed (make, model, model year) dimension shared by every fact.
+    description: Conformed (make, model, model year) dimension shared by every fact and bridge.
     columns:
       - name: vehicle_key
         tests: [unique, not_null]
@@ -59,4 +126,10 @@ models:
   - name: dim_component
     columns:
       - name: component_top
+        tests: [unique, not_null]
+
+  - name: dim_date
+    description: Calendar dimension, one row per day.
+    columns:
+      - name: date_day
         tests: [unique, not_null]

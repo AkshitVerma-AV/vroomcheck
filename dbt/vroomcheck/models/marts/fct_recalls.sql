@@ -1,6 +1,9 @@
--- One row per vehicle recall campaign (CAMPNO), with linked investigation if any.
+-- One row per passenger-vehicle recall campaign (CAMPNO), with its earliest linked investigation.
+-- Vehicle attributes are aggregated over the campaign's passenger-vehicle rows only, so they
+-- agree with bridge_recall_vehicle; all model years are kept (the VIN check needs older ones).
 with r as (
-    select * from {{ ref('stg_recalls') }} where recall_type = 'V'
+    select * from {{ ref('stg_recalls') }}
+    where recall_type = 'V' and is_passenger_vehicle
 ),
 campaign as (
     select
@@ -24,14 +27,22 @@ campaign as (
     from r
     group by campno
 ),
+-- A recall can come out of several investigations (see bridge_investigation_recall);
+-- investigation_id is the one NHTSA opened first, matching investigation_opened.
 inv as (
     select campno,
-           min(action_number) as investigation_id,
-           min(opened_date)   as investigation_opened
-    from {{ ref('stg_investigations') }}
-    where campno is not null
+           first(action_number order by opened_date nulls last, action_number) as investigation_id,
+           min(opened_date)                                                   as investigation_opened,
+           count(*)                                                           as n_investigations
+    from (
+        select action_number, campno, min(opened_date) as opened_date
+        from {{ ref('stg_investigations') }}
+        where campno is not null and is_passenger_vehicle
+        group by 1, 2
+    )
     group by campno
 )
-select c.*, inv.investigation_id, inv.investigation_opened
+select c.*, inv.investigation_id, inv.investigation_opened,
+       coalesce(inv.n_investigations, 0) as n_investigations
 from campaign c
 left join inv using (campno)

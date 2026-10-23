@@ -100,7 +100,7 @@ With no API key, drafting falls back to a deterministic template and the verifie
 |---|---|---|
 | Ingestion | Python loaders, Airflow | Python loaders ✅, Airflow DAG ✅ ([airflow/](airflow); Docker, since Airflow does not run natively on Windows) and an equivalent local runner `scripts/run_pipeline.py` |
 | Warehouse | Snowflake, Iceberg | DuckDB locally ✅. dbt `snowflake` target configured in `profiles.yml` (needs credentials) |
-| Transform | dbt Core | dbt Core 1.12: 4 staging views, 11 mart tables, 2 seeds, 25 tests ✅ |
+| Transform | dbt Core | dbt Core 1.12: 4 staging views, 14 mart tables, 5 seeds, 63 tests ✅ |
 | Embeddings | sentence-transformers, HDBSCAN | sentence-transformers 6.2 + scikit-learn HDBSCAN ✅ |
 | Agents and RAG | LangGraph | LangGraph 1.2, with RAG via DuckDB `array_cosine_similarity` ✅ |
 | LLMs | Llama (Groq), Gemini | Groq and Gemini clients ✅. **Needs `GROQ_API_KEY` in `.env`** |
@@ -197,7 +197,7 @@ Step timings on an RTX 3060 laptop:
 
 ```
 vroomcheck/       python package: config, db, ingestion/, detection/, agents/, services/
-dbt/vroomcheck/   dbt project: staging, marts, seeds (component ontology), tests, macros
+dbt/vroomcheck/   dbt project: staging, marts, seeds (component ontology, vehicle scope, name aliases), tests, macros
 airflow/          DAG + docker-compose
 mcp_server/       MCP server
 app/              Streamlit dashboard

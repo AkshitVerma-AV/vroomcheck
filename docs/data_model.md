@@ -7,10 +7,10 @@ schemas in Snowflake when run with `VC_DBT_TARGET=snowflake`.
 | Layer | Schema | Built by | Purpose |
 |---|---|---|---|
 | Bronze | `raw` | `vroomcheck/ingestion/load_raw.py` | NHTSA flat files as published, all VARCHAR, plus lineage columns `_source_file` and `_loaded_at`. Also holds `_dq_results` and `_load_rejects`. |
-| Silver | `staging` | dbt views `stg_*` | Typed dates and integers, normalised make/model names, component path split into top-level component. |
+| Silver | `staging` | dbt views `stg_*` | Typed dates and integers, canonical make/model names, component path split into top-level component, `is_passenger_vehicle` flag. |
 | Gold | `marts` | dbt tables | Star schema: facts, bridges and conformed dimensions, restricted to the project scope. |
 | ML | `ml` | `vroomcheck/detection/*` | Embeddings, clusters, monthly spike scores, recall matches, alerts and back-test results. |
-| Ref | `ref` | dbt seeds | `component_ontology`, `non_passenger_makes`. |
+| Ref | `ref` | dbt seeds | `component_ontology`, `passenger_makes`, `non_passenger_models`, `make_aliases`, `model_aliases`. |
 
 ## Gold layer (star schema)
 
@@ -25,16 +25,39 @@ erDiagram
     fct_recalls ||--o{ bridge_recall_vehicle : "campno"
     fct_tsbs ||--o{ bridge_tsb_vehicle : "nhtsa_id"
     fct_investigations ||--o{ bridge_investigation_vehicle : "action_number"
-    fct_investigations |o--o| fct_recalls : "campno (investigation led to recall)"
-    fct_complaints }o--o| fct_recalls : "referenced_campno (owner cites recall)"
+    fct_investigations ||--o{ bridge_investigation_recall : "action_number"
+    fct_recalls ||--o{ bridge_investigation_recall : "campno (investigation led to recall)"
+    fct_complaints ||--o{ bridge_complaint_recall_citation : "odino"
+    fct_recalls |o--o{ bridge_complaint_recall_citation : "campno (owner cites recall)"
+    dim_date ||--o{ fct_complaints : "received_date"
+    dim_date ||--o{ fct_recalls : "recall_date"
 
     dim_vehicle {
         varchar vehicle_key PK "md5(make|model|year)"
         varchar make
         varchar model
         int model_year
-        int n_complaints
-        int n_recalls
+        bool in_model_year_scope "model_year >= 2015"
+        bigint n_complaints
+        bigint n_recalls
+        bigint n_tsbs
+        bigint n_investigations
+    }
+    dim_date {
+        date date_day PK
+        date month_start
+        int year
+        int quarter
+        int month
+    }
+    bridge_investigation_recall {
+        varchar action_number FK
+        varchar campno FK
+    }
+    bridge_complaint_recall_citation {
+        varchar odino FK
+        varchar campno "every campaign cited in the narrative"
+        bool recall_in_marts
     }
     dim_component {
         varchar component_top PK
@@ -53,8 +76,9 @@ erDiagram
         int injured
         int deaths
         int harm_score
+        bool harm_counts_implausible "self-reported counts nulled in staging"
         varchar narrative "free text, the early signal"
-        varchar referenced_campno FK "recall cited in the narrative"
+        varchar referenced_campno "first vehicle recall cited in the narrative"
         bool is_remedy_complaint "repair-delay template, excluded from detection"
     }
     fct_recalls {
@@ -65,13 +89,15 @@ erDiagram
         varchar defect_summary
         varchar consequence_summary
         varchar remedy_summary
-        varchar investigation_id FK
+        varchar investigation_id FK "first investigation opened"
+        int n_investigations
     }
     fct_investigations {
         varchar action_number PK "PE / EA / DP / RQ"
         date opened_date
         date closed_date
-        varchar campno FK
+        varchar campno FK "first resulting recall"
+        int n_recalls
         varchar subject
     }
     fct_tsbs {
@@ -90,12 +116,31 @@ erDiagram
 * `fct_recalls`: one row per recall campaign (CAMPNO). The affected vehicles
   go into `bridge_recall_vehicle`, one row per campaign × make/model/year × component.
 * The vehicle key is `md5(make|model|model_year)`. Complaints, recalls, TSBs
-  and investigations all join on it after name normalisation (`norm_name` macro).
+  and investigations all join on it after name normalisation (`norm_name`,
+  `norm_model`, and the `make_aliases` / `model_aliases` seeds, e.g. `GLA250` → `GLA 250`).
+  `dim_vehicle` holds every vehicle any fact or bridge references, and every
+  `vehicle_key` is tested against it.
+* Investigations and recalls are many-to-many (`bridge_investigation_recall`).
+  `fct_recalls.investigation_id` / `fct_investigations.campno` keep the first link
+  for convenience.
 
-**Scope rules** (pitch slide 8), applied in `fct_complaints`:
-* product type is vehicle (`PROD_TYPE = 'V'`), model year 2015 or later, received 2015 or later
-* complaints about tires, child seats or equipment only are dropped, using `component_ontology.in_scope`
-* RVs, motorcycles and heavy trucks are dropped, using the `non_passenger_makes` seed
+**Scope rules** (pitch slide 8). One vehicle-type rule for every table, computed once in staging
+as `is_passenger_vehicle` (`macros/vehicle_scope.sql`):
+* the make is on the `passenger_makes` allow-list (current and defunct passenger brands;
+  RV, bus, trailer, motorcycle and truck makers are not on it), and
+* the model does not match `non_passenger_models` (motorcycles, medium-duty trucks and stripped
+  chassis sold under a passenger make, e.g. Honda Gold Wing, BMW R 1250 GS, Ford F-53 / F-650).
+
+Model-year window, per table:
+* `fct_complaints`: product type vehicle (`PROD_TYPE = 'V'`), model year 2015 or later, received
+  2015 or later; complaints about tires, child seats or equipment only are dropped using
+  `component_ontology.in_scope`.
+* `fct_tsbs` / `bridge_tsb_vehicle`: model year 2015 or later.
+* `fct_recalls`, `fct_investigations` and their bridges: all model years (the VIN check and the
+  investigation timeline need older vehicles). `dim_vehicle.in_model_year_scope` marks MY2015+.
+
+Self-reported injury counts above 20 and death counts above 10 (owners type the field maximum, 99,
+in protest) are treated as unknown in staging and flagged with `harm_counts_implausible`.
 
 ## ML layer
 
@@ -139,4 +184,4 @@ erDiagram
 | Where | Check |
 |---|---|
 | Ingestion gate (`raw._dq_results`) | row counts, primary-key nulls, unparseable dates, load rejects, missing narratives, future dates, CAMPNO format |
-| dbt tests | unique and not-null keys on every fact and dimension, referential integrity between bridges and facts, accepted investigation types, investigation close date not before open date (warn), complaint received no more than 2 years before its model year (warn) |
+| dbt tests | unique and not-null keys on every fact, dimension and seed; referential integrity from every bridge to its fact and to `dim_vehicle`, between investigations and recalls, and from fact dates to `dim_date`; harm counts within plausible limits; accepted investigation types (warn); investigation close date not before open date (warn); complaint received no more than 2 years before its model year (warn); failure date not after received date (warn); near-duplicate model names that should be aliased (warn); cited vehicle campaigns that do not exist (warn) |

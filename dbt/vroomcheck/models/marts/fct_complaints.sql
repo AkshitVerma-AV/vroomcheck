@@ -1,14 +1,15 @@
 -- One row per complaint (ODINO), restricted to the project scope:
--- vehicles (not tires / child seats / equipment), model year >= 2015, received >= 2015.
+-- passenger vehicles (not tires / child seats / equipment, motorcycles, RVs or commercial
+-- trucks), model year >= 2015, received >= 2015.
 with base as (
     select c.*, o.system_group, o.severity_weight, coalesce(o.in_scope, true) as component_in_scope
     from {{ ref('stg_complaints') }} c
     left join {{ ref('component_ontology') }} o using (component_top)
     where c.product_type = 'V'
+      and c.is_passenger_vehicle
       and c.model_year >= {{ var('min_model_year') }}
       and year(c.received_date) >= {{ var('min_received_year') }}
       and c.make is not null and c.model is not null
-      and c.make not in (select make from {{ ref('non_passenger_makes') }})
 ),
 per_complaint as (
     select
@@ -21,8 +22,9 @@ per_complaint as (
         min(fail_date)                      as fail_date,
         bool_or(is_crash)                   as is_crash,
         bool_or(is_fire)                    as is_fire,
-        max(injured)                        as injured,
-        max(deaths)                         as deaths,
+        coalesce(max(injured), 0)           as injured,
+        coalesce(max(deaths), 0)            as deaths,
+        bool_or(harm_counts_implausible)    as harm_counts_implausible,
         bool_or(medical_attention)          as medical_attention,
         bool_or(towed)                      as towed,
         max(miles)                          as miles,

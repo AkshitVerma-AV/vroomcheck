@@ -13,6 +13,9 @@ clean-targets: ["target", "dbt_packages"]
 vars:
   min_model_year: 2015
   min_received_year: 2015
+  # self-reported harm counts above these are treated as unknown (owners type 99 in protest)
+  max_plausible_injured: 20
+  max_plausible_deaths: 10
 
 models:
   vroomcheck:

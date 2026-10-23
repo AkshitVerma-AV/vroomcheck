@@ -1,0 +1,86 @@
+make,model_pattern,vehicle_class
+HONDA,ADV%,motorcycle / scooter
+HONDA,C125,motorcycle / scooter
+HONDA,CB%,motorcycle / scooter
+HONDA,CMX%,motorcycle / scooter
+HONDA,CRF%,motorcycle / scooter
+HONDA,CT125,motorcycle / scooter
+HONDA,CTX%,motorcycle / scooter
+HONDA,FSC%,motorcycle / scooter
+HONDA,GL1800%,motorcycle / scooter
+HONDA,GOLD WING%,motorcycle / scooter
+HONDA,GROM%,motorcycle / scooter
+HONDA,METROPOLITAN,motorcycle / scooter
+HONDA,MONKEY%,motorcycle / scooter
+HONDA,NAVI,motorcycle / scooter
+HONDA,NC7%,motorcycle / scooter
+HONDA,NHX%,motorcycle / scooter
+HONDA,NPS%,motorcycle / scooter
+HONDA,NSS%,motorcycle / scooter
+HONDA,NT700,motorcycle / scooter
+HONDA,NVA%,motorcycle / scooter
+HONDA,NX500,motorcycle / scooter
+HONDA,PCX%,motorcycle / scooter
+HONDA,REBEL%,motorcycle / scooter
+HONDA,SCL%,motorcycle / scooter
+HONDA,SH150%,motorcycle / scooter
+HONDA,ST1300%,motorcycle / scooter
+HONDA,SXS%,side-by-side
+HONDA,TRAIL 125,motorcycle / scooter
+HONDA,VFR%,motorcycle / scooter
+HONDA,VT%,motorcycle / scooter
+HONDA,XL750,motorcycle / scooter
+HONDA,XR%,motorcycle / scooter
+HONDA,Z125%,motorcycle / scooter
+BMW,750GS,motorcycle / scooter
+BMW,850GS,motorcycle / scooter
+BMW,C %,motorcycle / scooter
+BMW,C6%,motorcycle / scooter
+BMW,CE %,motorcycle / scooter
+BMW,F %,motorcycle / scooter
+BMW,F6%,motorcycle / scooter
+BMW,F7%,motorcycle / scooter
+BMW,F8%,motorcycle / scooter
+BMW,G %,motorcycle / scooter
+BMW,G3%,motorcycle / scooter
+BMW,G6%,motorcycle / scooter
+BMW,HP%,motorcycle / scooter
+BMW,K %,motorcycle / scooter
+BMW,K1%,motorcycle / scooter
+BMW,M 1000%,motorcycle / scooter
+BMW,R %,motorcycle / scooter
+BMW,R1%,motorcycle / scooter
+BMW,S 1000%,motorcycle / scooter
+BMW,S1000%,motorcycle / scooter
+FORD,E-450%,cutaway / stripped chassis
+FORD,F-53%,cutaway / stripped chassis
+FORD,F53%,cutaway / stripped chassis
+FORD,F-59%,cutaway / stripped chassis
+FORD,F59%,cutaway / stripped chassis
+FORD,STRIPPED CHASSIS,cutaway / stripped chassis
+FORD,F-6%,medium-duty truck
+FORD,F6%,medium-duty truck
+FORD,F-7%,medium-duty truck
+FORD,F7%,medium-duty truck
+CHEVROLET,%6500%,medium-duty truck
+CHEVROLET,%7500%,medium-duty truck
+CHEVROLET,LOW CAB FORWARD%,medium-duty truck
+CHEVROLET,W3500,medium-duty truck
+CHEVROLET,W4500,medium-duty truck
+CHEVROLET,W5500,medium-duty truck
+CHEVROLET,C4500,medium-duty truck
+CHEVROLET,G4500,cutaway / stripped chassis
+CHEVROLET,EXPRESS 4500,cutaway / stripped chassis
+CHEVROLET,%CUTAWAY%,cutaway / stripped chassis
+GMC,%6500%,medium-duty truck
+GMC,%7500%,medium-duty truck
+GMC,TOPKICK%,medium-duty truck
+GMC,W3500,medium-duty truck
+GMC,W4500,medium-duty truck
+GMC,W5500,medium-duty truck
+GMC,SAVANA 4500,cutaway / stripped chassis
+GMC,%CUTAWAY%,cutaway / stripped chassis
+VOLVO,VAH%,heavy truck
+VOLVO,VHD%,heavy truck
+VOLVO,VN%,heavy truck
+MERCEDES-BENZ,TOURRIDER%,bus / motorcoach
