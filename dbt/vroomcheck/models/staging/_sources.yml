@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Untyped NHTSA flat files exactly as published (loaded by vroomcheck.ingestion.load_raw).
+    schema: raw
+    tables:
+      - name: raw_complaints
+        description: Owner complaints (ODI Vehicle Owner Questionnaires), one row per complaint x component.
+        columns:
+          - name: CMPLID
+            tests: [not_null, unique]
+      - name: raw_recalls
+        description: Part 573 recall campaigns, one row per campaign x vehicle x component.
+        columns:
+          - name: RECORD_ID
+            tests: [not_null]
+      - name: raw_investigations
+        description: ODI defect investigations (PE / EA / DP / RQ / AQ).
+      - name: raw_tsbs
+        description: Manufacturer communications / technical service bulletins.

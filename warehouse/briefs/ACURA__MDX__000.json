@@ -1,0 +1,273 @@
+{
+  "cluster_id": "ACURA__MDX__000",
+  "vehicle": "2022-2023 ACURA MDX",
+  "status": "EMERGING",
+  "title": "Acura Mdx Power Train complaint cluster",
+  "risk_level": "MEDIUM",
+  "summary": "27 complaints cluster around case, transfer case, transfer, transmission, transmission transfer, awd. Status: EMERGING.",
+  "claims": [
+    {
+      "text": "Owners of 2022-2023 ACURA MDX describe a recurring power train problem (case, transfer case, transfer, transmission, transmission transfer, awd).",
+      "citations": [
+        "C-11724349",
+        "C-11712561",
+        "C-11748203"
+      ]
+    },
+    {
+      "text": "Some reports involve a crash, fire or injury.",
+      "citations": [
+        "C-11727533"
+      ]
+    },
+    {
+      "text": "The most similar past recall (26V236000, FORD) concerned: The transmission to transfer case joint may be misaligned due to an incorrectly performed previous repair, which could lead to wear of the transmission output s",
+      "citations": [
+        "R-26V236000"
+      ]
+    },
+    {
+      "text": "A related manufacturer bulletin exists: Dealer Message - American Honda Motor Co., Inc. (AHM) is searching for 2022-2023 MDXs with a client complaint of rear door weatherstrip that is loose, torn or d",
+      "citations": [
+        "T-10232963"
+      ]
+    }
+  ],
+  "rejected_claims": [],
+  "recommended_action": "Analyst review of the cited complaints; consider a preliminary evaluation.",
+  "evidence": {
+    "C-11724349": {
+      "type": "complaint",
+      "date": "2026-03-14 00:00:00",
+      "model_year": 2022,
+      "component": "POWER TRAIN",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "2022 Acura MDX Transfer Case and Transmission Failure \u2013 Spline Shearing \u200bDescription of Incident: I am reporting a catastrophic drivetrain failure on my 2022 Acura MDX. This failure occurred at approximately 50,000 miles. The vehicle initially exhibited a leak at the front differential/transfer case gasket. Upon inspection by the dealership, it was confirmed that both the transfer case and the transmission require complete replacement. \u200bThis failure matches the technical details in the recently opened NHTSA Action Number DP26001. The interfacing splines between the transmission and the power t..."
+    },
+    "C-11712561": {
+      "type": "complaint",
+      "date": "2026-01-21 00:00:00",
+      "model_year": 2022,
+      "component": "POWER TRAIN",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "My Acura service department notified me at my last oil change that they discovered (accidentally) my transmission / transfer case is damaged and is not transferring power to the rear wheels, rendering the vehicle as 2 wheel drive only. This requires a total replacement costing $16,000 +/-. My research indicates this is likely caused by a faulty splined shaft inside the transmission-transfer case assembly used in the early 2022 MDX vehicles.The dashboard info system for SH-AWD indicates that the car IS in All Wheel Drive and there are no messages indicating a problem with the All Wheel Drive. T..."
+    },
+    "C-11748203": {
+      "type": "complaint",
+      "date": "2026-07-03 00:00:00",
+      "model_year": 2022,
+      "component": "POWER TRAIN",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "My transfer case and transmission splines stripped out as I was leaving a parking lot on a rainy day... i heard a bang... went to dealer, they confirmed drive shift to rear wheels not turning. Today July 3rd 2026, my MDX-2022 With 92k miles is at the Acura dealer... I fortunately have an Acura Precision warranty.... which will cover my repair..."
+    },
+    "C-11753157": {
+      "type": "complaint",
+      "date": "2026-07-27 00:00:00",
+      "model_year": 2022,
+      "component": "POWER TRAIN",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "Vehicle exhibited a fluid leak at the rear of the engine near the transmission/transfer case junction. An independent shop is currently evaluating; suspected power take-off unit failure. This matches the failure pattern described in NHTSA Defect Petition DP26001 covering 2022-2023 Acura MDX and 2021-2023 Acura TLX for interfacing spline failure between the transmission and the rear-wheel-drive power take-off unit. Separately, while pulling out into traffic, the vehicle hesitated and failed to accelerate as commanded, chugging briefly before delivering power. This nearly resulted in a collision..."
+    },
+    "C-11737467": {
+      "type": "complaint",
+      "date": "2026-05-12 00:00:00",
+      "model_year": 2022,
+      "component": "POWER TRAIN",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "I own a 2022 Acura MDX SH-AWD with approximately 85,000 miles. The issue began suddenly while driving around 5 mph when two loud bangs were heard from the rear drivetrain/transfer case area. After the initial incident, the vehicle was driven home, and the problem became consistently noticeable during any acceleration from a stop or low speed. The drivetrain would clunk/slip during acceleration and exhibited abnormal engagement behavior. Due to concern about causing further drivetrain damage or a potential safety issue, the vehicle was subsequently towed to an Acura dealer for diagnosis.  The A..."
+    },
+    "C-11739605": {
+      "type": "complaint",
+      "date": "2026-05-22 00:00:00",
+      "model_year": 2022,
+      "component": "POWER TRAIN",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "My 2022 MDX purchased new in 2021 experienced an unexpected loss of AWD functionality at 5 years old with 77000 miles when the splines of the transfer case sheared with the transmission.  The failure reverted the car to FWD and became very easy to lose traction in anything but ideal road conditions.  There were no signs of this failure.  No warning lights, no indication on the AWD power distribution monitor, and no sounds or other indications.  I rigorously followed all maintenance schedules and performed all regularly scheduled maintenance at the Acura dealership.  There have been numerous ti..."
+    },
+    "C-11746086": {
+      "type": "complaint",
+      "date": "2026-06-23 00:00:00",
+      "model_year": 2022,
+      "component": "POWER TRAIN",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "My 2022 Acura AWD MDX with 95795 miles lost the power to the rear wheels. The spline between the transmission and the transfer case stripped. The transmission and transfer case had to be replaced for $14,442.37. I had Assurant for extended warranty, and they reluctantly paid most of the repair. The shop said this was the first non-turbo (sport) model they have heard of breaking. I believe there are several complaints filed about this issue. I'm retired and travel a fair amount in the mountains."
+    },
+    "C-11746418": {
+      "type": "complaint",
+      "date": "2026-06-25 00:00:00",
+      "model_year": 2022,
+      "component": "POWER TRAIN",
+      "crash": false,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "representative",
+      "text": "Noticed fluid was leaking from bottom of car. Took to dealership and they found the transmission output shaft was twisted leading to destruction of transmission seals leading to fluid leak. They recommend full replacement of the transmission and transfer case.   It appears NHTSA is already investing this known problem for the 2022 mdx where the transfer case fails and the vehicle loses its AWD function and becomes a FWD car."
+    },
+    "C-11727533": {
+      "type": "complaint",
+      "date": "2026-03-27 00:00:00",
+      "model_year": 2022,
+      "component": "POWER TRAIN",
+      "crash": true,
+      "fire": false,
+      "injured": 0,
+      "deaths": 0,
+      "selected_as": "highest harm",
+      "text": "My vehicle stopped handling as it usually had and I at a significant decrease in traction and slid off the road and slammed into a road sign. No injuries but significant damage to the vehicle. It seemed as though the all-wheel drive was not working. No warning lamps and computer system indicated that all four wheels were getting power. Took it to dealer and they confirmed that the all-wheel drive system has failed. Splines in the transfer case stripped and transmission needs to be replaced"
+    },
+    "R-26V236000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2026-04-14 00:00:00",
+      "makes": "FORD",
+      "component": "POWER TRAIN",
+      "similarity": 0.666,
+      "text": "The transmission to transfer case joint may be misaligned due to an incorrectly performed previous repair, which could lead to wear of the transmission output shaft splines and transfer case input splines.",
+      "consequence": "Excessive wear of the transmission and transfer case splines may result in a loss of drive power or vehicle rollaway, increasing the risk of a crash."
+    },
+    "R-14V365000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2014-06-25 00:00:00",
+      "makes": "MITSUBISHI",
+      "component": "POWER TRAIN",
+      "similarity": 0.607,
+      "text": "During servicing, the affected vehicles were repaired with replacement transfer case assemblies whose oil seal may come out of position.",
+      "consequence": "If the oil seal dislodges, automatic transmission fluid (ATF) may enter the transfer case assembly, reducing the ATF pressure in the transmission, resulting in poor transmission shifting or the inability of the vehicle to be driven, increasing the ri..."
+    },
+    "R-16V495000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2016-07-01 00:00:00",
+      "makes": "RAM",
+      "component": "POWER TRAIN",
+      "similarity": 0.602,
+      "text": "The transfer case may have been manufactured with a misshapen main output shaft, creating voids that may cause a shaft fracture.",
+      "consequence": "If the main output shaft fractures, the vehicle may lose motive power, increasing the risk of a crash.  Additionally, the driver may be unable to place the vehicle in PARK, increasing the risk of a vehicle rollaway."
+    },
+    "R-18V335000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2018-05-22 00:00:00",
+      "makes": "MERCEDES-BENZ",
+      "component": "POWER TRAIN",
+      "similarity": 0.572,
+      "text": "The transmission support may not have been properly tightened to the vehicle body, potentially resulting in damage to the driveshaft.",
+      "consequence": "Damage to the driveshaft could cause a loss of power to the wheels, increasing the risk of a crash."
+    },
+    "R-20V627000": {
+      "type": "recall",
+      "scope": "similar past recall (any make)",
+      "date": "2020-10-09 00:00:00",
+      "makes": "MERCEDES-BENZ",
+      "component": "POWER TRAIN",
+      "similarity": 0.561,
+      "text": "The connection of the locking ring between the front and rear part of the drive shaft might not have been installed correctly, possibly resulting in a loss of power transfer between the transfer case and the rear axle differential.",
+      "consequence": "If the transfer case disconnects from the rear axle differential the vehicle could stall, increasing the risk of a crash."
+    },
+    "R-26V332000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2026-05-21 00:00:00",
+      "component": "AIR BAGS",
+      "similarity": 0.218,
+      "text": "The front passenger seat weight sensor may crack and short circuit, which can cause the air bags to deploy unintentionally during a crash."
+    },
+    "R-25V391000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2025-06-12 00:00:00",
+      "component": "SERVICE BRAKES, HYDRAULIC",
+      "similarity": 0.236,
+      "text": "The brake pedal pivot pin was not secured properly, which can cause the pedal to shift out of position. As such, these vehicles fail to comply with Federal Motor Vehicle Safety Standard numbers 108, \"Lamps, Reflective Devices, and Associated Equipment\" and 135, \"Light Vehicle Brake Systems.\""
+    },
+    "R-24V064000": {
+      "type": "recall",
+      "scope": "same vehicle line",
+      "date": "2024-02-01 00:00:00",
+      "component": "AIR BAGS",
+      "similarity": 0.196,
+      "text": "The front passenger seat weight sensor may crack and short circuit, failing to suppress the air bag as intended."
+    },
+    "T-10232963": {
+      "type": "service_bulletin",
+      "doc": "BTI&03062023904",
+      "date": "2023-03-06 00:00:00",
+      "component": "STRUCTURE",
+      "similarity": 0.503,
+      "text": "Dealer Message - American Honda Motor Co., Inc. (AHM) is searching for 2022-2023 MDXs with a client complaint of rear door weatherstrip that is loose, torn or deformed. To better understand the cause of this condition, AHM would like to inspect the vehicle prior to you attempting a repair of any kind.  Qualifiers  AHM is interested ONLY if the vehicle meets the following requirements:       1.  Must be able to confirm the issue visually (click \u00ef\u00bb\u00bf\u00ef\u00bb\u00bfHERE\u00ef\u00bb\u00bf\u00ef\u00bb\u00bf for example photos).       2.  No r..."
+    },
+    "T-10226200": {
+      "type": "service_bulletin",
+      "doc": "BTI&11082022901",
+      "date": "2022-11-08 00:00:00",
+      "component": "STRUCTURE",
+      "similarity": 0.488,
+      "text": "Dealer Message - American Honda Motor Co., Inc. (AHM) is searching for 2022-2023 MDXs with a client complaint of rear door weatherstrip that is loose, torn or deformed. To better understand the cause of this condition, AHM would like to obtain images of the weatherstrip before you attempt any repairs & collect parts."
+    },
+    "T-10226212": {
+      "type": "service_bulletin",
+      "doc": "BTI&11122022909",
+      "date": "2022-11-12 00:00:00",
+      "component": "STRUCTURE",
+      "similarity": 0.488,
+      "text": "Dealer Message - American Honda Motor Co., Inc. (AHM) is searching for 2022-2023 MDXs with a client complaint of rear door weatherstrip that is loose, torn or deformed. To better understand the cause of this condition, AHM would like to obtain images of the weatherstrip before you attempt any repairs & collect parts."
+    },
+    "I-DP26001": {
+      "type": "investigation",
+      "opened": "2026-03-06 00:00:00",
+      "closed": "2026-08-04 00:00:00",
+      "recall": null,
+      "component": "POWER TRAIN",
+      "text": "All wheel drive allegation"
+    },
+    "I-EA25004": {
+      "type": "investigation",
+      "opened": "2025-03-26 00:00:00",
+      "closed": "NaT",
+      "recall": null,
+      "component": "ENGINE AND ENGINE COOLING",
+      "text": "No Restart After Auto Start/Stop Engages"
+    }
+  },
+  "citation_coverage": 1.0,
+  "generated_by": "template",
+  "attempts": 1,
+  "generated_at": "2026-10-23T01:39:23.227378+00:00",
+  "trace": [
+    "signal_agent: cluster ACURA__MDX__000 size=27 with 9 evidence complaints",
+    "retrieval_agent: added 13 recall/TSB/investigation documents",
+    "drafting_agent: attempt 1 produced 4 claims via template",
+    "verifier_agent: 4 verified, 0 rejected",
+    "publish: brief saved"
+  ]
+}

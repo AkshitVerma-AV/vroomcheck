@@ -1,0 +1,23 @@
+# Minimal single-node Airflow for the Vroomcheck DAG (Airflow does not run natively on Windows).
+#   cd airflow && docker compose up        ->  http://localhost:8080  (admin / admin)
+services:
+  airflow:
+    image: apache/airflow:2.10.5-python3.12
+    command: >
+      bash -c "pip install --no-cache-dir -r /opt/vroomcheck/requirements.txt &&
+               airflow db migrate &&
+               airflow users create --username admin --password admin --firstname a --lastname a
+                 --role Admin --email admin@example.com || true;
+               airflow scheduler & exec airflow webserver"
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/vroomcheck/airflow/dags
+      VC_WAREHOUSE: /opt/vroomcheck/warehouse/vroomcheck.duckdb
+      PYTHONPATH: /opt/vroomcheck
+    env_file:
+      - ../.env
+    volumes:
+      - ..:/opt/vroomcheck
+    ports:
+      - "8080:8080"

@@ -1,0 +1,16 @@
+.venv/
+.env
+__pycache__/
+.pytest_cache/
+
+# data is published as GitHub Release assets (see scripts/fetch_data_snapshot.py)
+data/landing/
+warehouse/*.duckdb
+warehouse/*.wal
+*.zip
+
+dbt/vroomcheck/target/
+dbt/vroomcheck/logs/
+dbt/vroomcheck/dbt_packages/
+dbt/vroomcheck/.user.yml
+logs/

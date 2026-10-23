@@ -1,0 +1,27 @@
+# Core data engineering
+duckdb==2.0.0
+dbt-core==1.12.6
+dbt-duckdb==1.11.0
+# dbt-snowflake        # add for the Snowflake target
+pandas==3.0.6
+pyarrow==26.0.0
+numpy==2.5.4
+requests==2.34.2
+python-dotenv==1.2.4
+
+# Detection
+scikit-learn==1.9.1
+scipy==1.18.1
+sentence-transformers==6.2.0
+# For GPU embeddings (≈20x faster) install torch from the CUDA index first:
+#   pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cu130
+torch==2.14.1
+
+# Agents, LLMs, integration, UI
+langgraph==1.2.16
+groq==1.7.0
+mcp[cli]==2.3.0
+streamlit==1.66.1
+plotly==7.1.0
+
+pytest==9.1.1

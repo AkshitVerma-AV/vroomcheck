@@ -1,0 +1,28 @@
+name: vroomcheck
+version: "0.1.0"
+config-version: 2
+profile: vroomcheck
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  min_model_year: 2015
+  min_received_year: 2015
+
+models:
+  vroomcheck:
+    staging:
+      +materialized: view
+      +schema: staging
+    marts:
+      +materialized: table
+      +schema: marts
+
+seeds:
+  vroomcheck:
+    +schema: ref

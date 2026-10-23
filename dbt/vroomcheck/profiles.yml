@@ -1,0 +1,20 @@
+# Two targets, one project:
+#   dev       - local DuckDB file (default, used for the demo)
+#   snowflake - the production warehouse from the pitch; credentials via env vars
+vroomcheck:
+  target: "{{ env_var('VC_DBT_TARGET', 'dev') }}"
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('VC_WAREHOUSE', '../../warehouse/vroomcheck.duckdb') }}"
+      threads: 4
+    snowflake:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT', '') }}"
+      user: "{{ env_var('SNOWFLAKE_USER', '') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD', '') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'TRANSFORMER') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'VROOMCHECK_WH') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'VROOMCHECK') }}"
+      schema: analytics
+      threads: 8

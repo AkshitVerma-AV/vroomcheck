@@ -1,0 +1,54 @@
+component_top,system_group,severity_weight,in_scope
+AIR BAGS,Occupant Protection,1.0,true
+SEAT BELTS,Occupant Protection,1.0,true
+SEATS,Occupant Protection,0.7,true
+CHILD SEAT,Child Restraint,0.0,false
+SERVICE BRAKES,Braking,1.0,true
+"SERVICE BRAKES, HYDRAULIC",Braking,1.0,true
+"SERVICE BRAKES, AIR",Braking,1.0,true
+"SERVICE BRAKES, ELECTRIC",Braking,1.0,true
+PARKING BRAKE,Braking,0.7,true
+ELECTRONIC STABILITY CONTROL (ESC),Braking,0.9,true
+ELECTRONIC STABILITY CONTROL,Braking,0.9,true
+STEERING,Steering & Suspension,1.0,true
+SUSPENSION,Steering & Suspension,0.8,true
+WHEELS,Steering & Suspension,0.8,true
+TIRES,Tires,0.0,false
+ENGINE,Powertrain,0.8,true
+ENGINE AND ENGINE COOLING,Powertrain,0.8,true
+POWER TRAIN,Powertrain,0.9,true
+HYBRID PROPULSION SYSTEM,Powertrain,0.9,true
+ELECTRICAL SYSTEM,Electrical & Propulsion Battery,0.8,true
+"FUEL/PROPULSION SYSTEM",Fuel & Fire Risk,1.0,true
+"FUEL SYSTEM, GASOLINE",Fuel & Fire Risk,1.0,true
+"FUEL SYSTEM, DIESEL",Fuel & Fire Risk,1.0,true
+"FUEL SYSTEM, OTHER",Fuel & Fire Risk,1.0,true
+VEHICLE SPEED CONTROL,Driver Assistance & Controls,1.0,true
+FORWARD COLLISION AVOIDANCE,Driver Assistance & Controls,1.0,true
+LANE DEPARTURE,Driver Assistance & Controls,0.8,true
+BACK OVER PREVENTION,Driver Assistance & Controls,0.8,true
+VISIBILITY,Visibility & Lighting,0.7,true
+VISIBILITY/WIPER,Visibility & Lighting,0.7,true
+EXTERIOR LIGHTING,Visibility & Lighting,0.6,true
+LATCHES/LOCKS/LINKAGES,Body & Structure,0.6,true
+STRUCTURE,Body & Structure,0.7,true
+TRAILER HITCHES,Body & Structure,0.4,true
+COMMUNICATION,Electrical & Propulsion Battery,0.5,true
+EQUIPMENT,Equipment,0.0,false
+EQUIPMENT ADAPTIVE/MOBILITY,Equipment,0.0,false
+UNKNOWN OR OTHER,Unknown,0.3,true
+"SERVICE BRAKES, HYDRAULIC; AUTOHOLD BRAKE SYSTEM/BRAKE HOLD",Braking,1.0,true
+TRACTION CONTROL SYSTEM,Braking,0.9,true
+FIRERELATED,Fuel & Fire Risk,1.0,true
+ROLLOVER,Body & Structure,1.0,true
+INTERIOR LIGHTING,Visibility & Lighting,0.3,true
+COMMUNICATIONS,Electrical & Propulsion Battery,0.5,true
+OTHER/I AM NOT SURE,Unknown,0.3,true
+OTHER/UNKNOWN,Unknown,0.3,true
+OTHER,Unknown,0.3,true
+NONE,Unknown,0.2,true
+"CHEST CLIP, BUCKLE, HARNESS",Child Restraint,0.0,false
+"CARRY HANDLE, SHELL, BASE",Child Restraint,0.0,false
+"INSERT, PADDING",Child Restraint,0.0,false
+"TETHER, LOWER ANCHOR (ON CAR SEAT OR VEHICLE)",Child Restraint,0.0,false
+I SUSPECT THE CAR SEAT IS COUNTERFEIT,Child Restraint,0.0,false
