@@ -50,6 +50,8 @@ Collection runs in [vroomcheck/ingestion](vroomcheck/ingestion):
 
 ## 3. Data model
 
+![Vroomcheck data model: a star schema of four fact tables (complaints, recalls, investigations, service bulletins) joined through six bridge tables to the conformed dim_vehicle, plus dim_component and dim_date](docs/Vroomcheck_Data_Model.png)
+
 The full ER diagrams are in [docs/data_model.md](docs/data_model.md). In short:
 
 * **Star schema (gold)**: `fct_complaints`, `fct_recalls`, `fct_investigations` and `fct_tsbs`, joined through bridge tables to the conformed `dim_vehicle` (key: `md5(make|model|year)`) and `dim_component` (the component ontology seed).
