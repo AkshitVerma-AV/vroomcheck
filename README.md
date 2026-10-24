@@ -60,6 +60,10 @@ The full ER diagrams are in [docs/data_model.md](docs/data_model.md). In short:
 
 ## 4. Architecture
 
+![Vroomcheck system architecture: a daily batch write path (ingest, dbt transform, ML detection) into a DuckDB warehouse, and an on-demand read path serving the LangGraph agents, the Streamlit dashboard and the MCP server](docs/Vroomcheck_System_Architecture.png)
+
+Simplified flow:
+
 ```mermaid
 flowchart LR
   subgraph DE[Data engineering]
