@@ -2,7 +2,8 @@
 duckdb==2.0.0
 dbt-core==1.12.6
 dbt-duckdb==1.11.0
-# dbt-snowflake        # add for the Snowflake target
+dbt-snowflake==1.12.4          # Snowflake target (VC_DBT_TARGET=snowflake)
+snowflake-connector-python==4.8.0
 pandas==3.0.6
 pyarrow==26.0.0
 numpy==2.5.4

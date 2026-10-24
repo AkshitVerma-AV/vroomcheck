@@ -1,6 +1,7 @@
 # Two targets, one project:
 #   dev       - local DuckDB file (default, used for the demo)
 #   snowflake - the production warehouse from the pitch; credentials via env vars
+#               (key-pair login when SNOWFLAKE_PRIVATE_KEY_PATH is set, else password)
 vroomcheck:
   target: "{{ env_var('VC_DBT_TARGET', 'dev') }}"
   outputs:
@@ -12,7 +13,8 @@ vroomcheck:
       type: snowflake
       account: "{{ env_var('SNOWFLAKE_ACCOUNT', '') }}"
       user: "{{ env_var('SNOWFLAKE_USER', '') }}"
-      password: "{{ env_var('SNOWFLAKE_PASSWORD', '') }}"
+      private_key_path: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PATH', '') }}"
+      password: "{{ '' if env_var('SNOWFLAKE_PRIVATE_KEY_PATH', '') else env_var('SNOWFLAKE_PASSWORD', '') }}"
       role: "{{ env_var('SNOWFLAKE_ROLE', 'TRANSFORMER') }}"
       warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'VROOMCHECK_WH') }}"
       database: "{{ env_var('SNOWFLAKE_DATABASE', 'VROOMCHECK') }}"

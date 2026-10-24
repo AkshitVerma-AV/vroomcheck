@@ -2,9 +2,7 @@
 -- (fct_complaints.referenced_campno keeps only the first vehicle campaign).
 -- Campaign types: V vehicle, E equipment, I/C child restraint, T tire.
 with cited as (
-    select odino,
-           unnest(list_distinct(regexp_extract_all(narrative, '\d{2}[VEICT]\d{3}000'))) as campno
-    from {{ ref('fct_complaints') }}
+    {{ regex_match_rows(ref('fct_complaints'), 'odino', 'narrative', '[0-9]{2}[VEICT][0-9]{3}000', 'campno') }}
 )
 select c.odino,
        c.campno,

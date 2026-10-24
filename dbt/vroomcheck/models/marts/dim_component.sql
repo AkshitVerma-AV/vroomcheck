@@ -13,4 +13,4 @@ select
     coalesce(s.in_scope, true)                 as in_scope,
     coalesce(o.n_complaint_rows, 0)            as n_complaint_rows
 from observed o
-full outer join {{ ref('component_ontology') }} s using (component_top)
+full outer join {{ ref('component_ontology') }} s on s.component_top = o.component_top

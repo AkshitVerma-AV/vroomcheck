@@ -42,6 +42,16 @@ GROQ_MODEL = os.getenv("VC_GROQ_MODEL", "llama-3.3-70b-versatile")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("VC_GEMINI_MODEL", "gemini-2.5-flash")
 
+# ---------------------------------------------------------------- snowflake (dbt target + raw loader)
+# Key-pair login when SNOWFLAKE_PRIVATE_KEY_PATH is set, otherwise password.
+SNOWFLAKE_ACCOUNT = os.getenv("SNOWFLAKE_ACCOUNT", "")
+SNOWFLAKE_USER = os.getenv("SNOWFLAKE_USER", "")
+SNOWFLAKE_PASSWORD = os.getenv("SNOWFLAKE_PASSWORD", "")
+SNOWFLAKE_PRIVATE_KEY_PATH = os.getenv("SNOWFLAKE_PRIVATE_KEY_PATH", "")
+SNOWFLAKE_ROLE = os.getenv("SNOWFLAKE_ROLE", "TRANSFORMER")
+SNOWFLAKE_WAREHOUSE = os.getenv("SNOWFLAKE_WAREHOUSE", "VROOMCHECK_WH")
+SNOWFLAKE_DATABASE = os.getenv("SNOWFLAKE_DATABASE", "VROOMCHECK")
+
 # ---------------------------------------------------------------- external APIs
 VPIC_DECODE_URL = "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/{vin}?format=json"
 RECALLS_API_URL = "https://api.nhtsa.gov/recalls/recallsByVehicle"

@@ -13,18 +13,19 @@ recalls as (
 )
 select
     i.action_number,
-    any_value(i.investigation_type)                     as investigation_type,
+    min(i.investigation_type)                           as investigation_type,
     min(i.opened_date)                                  as opened_date,
     max(i.closed_date)                                  as closed_date,
-    any_value(r.campno)                                 as campno,
-    coalesce(any_value(r.n_recalls), 0)                 as n_recalls,
-    any_value(i.mfr_name)                               as mfr_name,
-    string_agg(distinct i.make, ', ' order by i.make)   as makes,
-    string_agg(distinct i.model, ', ' order by i.model) as models,
+    min(r.campno)                                       as campno,
+    coalesce(min(r.n_recalls), 0)                       as n_recalls,
+    -- 77 investigations span several manufacturers; min() always picks the same one
+    min(i.mfr_name)                                     as mfr_name,
+    {{ string_agg_distinct('i.make', ', ') }}           as makes,
+    {{ string_agg_distinct('i.model', ', ') }}          as models,
     min(i.model_year)                                   as min_model_year,
     max(i.model_year)                                   as max_model_year,
-    string_agg(distinct i.component_top, ' | ' order by i.component_top) as component_tops,
-    any_value(i.subject)                                as subject,
+    {{ string_agg_distinct('i.component_top', ' | ') }} as component_tops,
+    min(i.subject)                                      as subject,
     max(i.summary)                                      as summary
 from i
 left join recalls r using (action_number)

@@ -2,7 +2,7 @@
 -- (e.g. E-GOLF vs EGOLF) split one vehicle into two keys. Add the pair to model_aliases.
 {{ config(severity='warn') }}
 with v as (
-    select make, model, model_year, regexp_replace(model, '[\s-]', '', 'g') as squashed
+    select make, model, model_year, {{ regex_replace_all('model', '[[:space:]-]', '') }} as squashed
     from {{ ref('dim_vehicle') }}
 )
 select a.make, a.model, b.model as variant, a.model_year

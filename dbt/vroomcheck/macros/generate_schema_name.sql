@@ -5,13 +5,13 @@
 
 {# Normalise free-text make / model names so complaints, recalls and TSBs join. #}
 {% macro norm_name(col) -%}
-    nullif(regexp_replace(upper(trim({{ col }})), '\s+', ' ', 'g'), '')
+    nullif({{ regex_replace_all('upper(' ~ ws_trim(col) ~ ')', '[[:space:]]+', ' ') }}, '')
 {%- endmacro %}
 
 {# NHTSA dates are YYYYMMDD strings; anything unparseable or placeholder becomes null. #}
 {% macro nhtsa_date(col) -%}
     case when {{ col }} is null or {{ col }} in ('', '00000000', '19000101') then null
-         else try_strptime({{ col }}, '%Y%m%d')::date end
+         else {{ parse_yyyymmdd(col) }} end
 {%- endmacro %}
 
 {% macro model_year(col) -%}

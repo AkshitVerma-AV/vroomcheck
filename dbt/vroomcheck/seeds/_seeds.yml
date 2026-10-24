@@ -3,6 +3,9 @@ version: 2
 seeds:
   - name: component_ontology
     description: NHTSA top-level component -> system group, severity weight and scope flag.
+    # explicit types: Snowflake would otherwise infer an integer type and turn 0.3 into 0
+    config:
+      column_types: {severity_weight: double, in_scope: boolean}
     columns:
       - name: component_top
         tests: [unique, not_null]
