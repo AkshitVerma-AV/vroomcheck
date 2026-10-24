@@ -37,8 +37,12 @@ per_complaint as (
         count(*)                            as n_components,
         string_agg(distinct component_top, ' | ' order by component_top) as component_tops,
         string_agg(distinct component_path, ' | ' order by component_path) as component_paths,
-        arg_max(component_top, coalesce(severity_weight, 0.3)) as primary_component,
-        arg_max(system_group, coalesce(severity_weight, 0.3))  as primary_system,
+        -- most severe component; 31k complaints tie on severity, so break ties alphabetically
+        -- and take both columns from the same row to keep runs reproducible
+        first(component_top order by coalesce(severity_weight, 0.3) desc, component_top nulls last)
+                                            as primary_component,
+        first(system_group order by coalesce(severity_weight, 0.3) desc, component_top nulls last)
+                                            as primary_system,
         bool_or(component_in_scope)         as in_scope
     from base
     group by odino

@@ -112,7 +112,8 @@ erDiagram
 **Grain**
 * `fct_complaints`: one row per complaint (ODINO). In the raw file a complaint
   that names three components appears as three rows. The extra rows go into
-  `bridge_complaint_component`.
+  `bridge_complaint_component`. `primary_component` is the most severe of them
+  (ties broken alphabetically) and `primary_system` is that component's group.
 * `fct_recalls`: one row per recall campaign (CAMPNO). The affected vehicles
   go into `bridge_recall_vehicle`, one row per campaign × make/model/year × component.
 * The vehicle key is `md5(make|model|model_year)`. Complaints, recalls, TSBs
