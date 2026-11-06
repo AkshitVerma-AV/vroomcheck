@@ -1,5 +1,6 @@
 """Unit tests for the parts of Vroomcheck that must not silently regress:
-the causal spike test, narrative cleaning and the verifier guardrail."""
+the causal spike test, the ESV26-289 indicator and model-year test, narrative
+cleaning and the verifier guardrail."""
 from __future__ import annotations
 
 import sys
@@ -11,10 +12,73 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from vroomcheck.agents import graph  # noqa: E402
-from vroomcheck.detection.spike import score_cluster  # noqa: E402
+from vroomcheck.detection.indicator import merge_events, score_indicator  # noqa: E402
+from vroomcheck.detection.model_years import elevated_years  # noqa: E402
+from vroomcheck.detection.spike import combine_flags, score_cluster  # noqa: E402
 from vroomcheck.detection.text import clean_narrative  # noqa: E402
 
 MONTHS = pd.date_range("2020-01-01", periods=36, freq="MS")
+COMPONENTS = ["BRAKES", "ENGINE", "STEERING", "ELECTRICAL"]
+
+
+def _fleet(bad_from: int | None = None) -> pd.DataFrame:
+    """A fleet with an even complaint mix: one big seller, twenty small lines.
+    From month bad_from, line SMALL_0 gets a surge of brake complaints. (With only a
+    handful of lines, one surge shifts every other component's baseline, because the
+    shares sum to one: a known limitation of the paper's normalisation.)"""
+    rows = []
+    for v, per in [("BIG", 100)] + [(f"SMALL_{i}", 4) for i in range(20)]:
+        for comp in COMPONENTS:
+            for i, m in enumerate(MONTHS):
+                n = 20 if (v == "SMALL_0" and comp == "BRAKES" and bad_from is not None and i >= bad_from) else per
+                rows.append(("MAKE", v, comp, m, n))
+    return pd.DataFrame(rows, columns=["make", "model", "component", "month", "n"])
+
+
+def test_indicator_ignores_volume_when_the_mix_is_normal():
+    ind = score_indicator(_fleet(), MONTHS)
+    big = ind[ind.model == "BIG"]
+    assert big.n_12m.max() > 1000          # by far the most complaints ...
+    assert not ind.is_elevated.any()       # ... but nobody's mix differs from the fleet
+    assert big.p_indicator.abs().max() < 0.2
+
+
+def test_indicator_flags_a_sustained_abnormal_share_causally():
+    ind = score_indicator(_fleet(bad_from=20), MONTHS)
+    bad = ind[(ind.model == "SMALL_0") & (ind.component == "BRAKES")].set_index("month")
+    first = bad.index[bad.is_elevated][0]
+    # the 6-month test window has to fill with elevated months first, as with the paper's 180 days
+    assert first >= MONTHS[20] and first <= MONTHS[26]
+    assert not ind[ind.model == "BIG"].is_elevated.any()
+    # causal: scoring only the first 28 months gives the same flags for those months
+    short = score_indicator(_fleet(bad_from=20).query("month < @MONTHS[28]"), MONTHS[:28])
+    short = short[(short.model == "SMALL_0") & (short.component == "BRAKES")].set_index("month")
+    assert short.is_elevated.any()
+    assert short.is_elevated.equals(bad.is_elevated.iloc[:28])
+
+
+def test_flags_less_than_a_year_apart_merge_into_one_event():
+    months = pd.date_range("2020-01-01", periods=40, freq="MS")
+    flagged = [0, 1, 2, 10, 11, 30]       # gap of 8 months merges; gap of 19 starts a new event
+    ind = pd.DataFrame({"make": "M", "model": "X", "component": "BRAKES", "month": months, "n": 5.0,
+                        "p_indicator": 0.9, "is_elevated": [i in flagged for i in range(40)]})
+    ev = merge_events(ind)
+    assert len(ev) == 2
+    assert ev.start_month.tolist() == [months[0], months[30]]
+    assert ev.flagged_months.tolist() == [5, 1]
+
+
+def test_binomial_names_only_the_overrepresented_model_year():
+    years = elevated_years(pd.Series({2018: 10, 2019: 60, 2020: 12, 2021: 9}))
+    assert years.loc[years.is_elevated, "model_year"].tolist() == [2019]
+
+
+def test_combine_flags_for_each_detector():
+    p, q = pd.Series([True, True, False]), pd.Series([True, False, False])
+    assert combine_flags(p, q, "poisson").tolist() == [True, True, False]
+    assert combine_flags(p, q, "paper").tolist() == [True, False, False]
+    assert combine_flags(p, q, "combined").tolist() == [True, False, False]
+    assert combine_flags(p, q, "either").tolist() == [True, True, False]
 
 
 def test_flat_series_never_spikes():

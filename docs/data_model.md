@@ -156,6 +156,9 @@ erDiagram
     fct_recalls ||--o{ cluster_recall_match : campno
     clusters ||--|| alerts : cluster_id
     fct_recalls ||--o| backtest_results : campno
+    fct_complaints ||--o{ vehicle_component_indicator : "make, model, component"
+    vehicle_component_indicator ||--o{ indicator_events : "make, model, component"
+    clusters ||--o{ cluster_model_years : cluster_id
 
     complaint_embeddings { varchar odino PK
         float384 embedding }
@@ -170,15 +173,48 @@ erDiagram
         int n
         double expected_3m
         double p_value
-        bool is_spike }
+        bool poisson_spike
+        double p_indicator
+        bool paper_elevated
+        bool is_spike "per config.DETECTOR"
+        varchar detector }
     alerts { varchar cluster_id PK
         varchar status "EMERGING / RECALLED / WATCH"
+        varchar affected_model_years
         double priority }
     backtest_results { varchar campno PK
+        varchar detector
         date recall_date
         date first_alert_month
         double lead_months }
+    vehicle_component_indicator { varchar make
+        varchar model
+        varchar component
+        date month
+        double n_12m
+        double cohens_h
+        double d_indicator
+        double p_indicator
+        bool is_elevated }
+    indicator_events { varchar make
+        varchar model
+        varchar component
+        date start_month
+        date end_month
+        double event_complaints }
+    cluster_model_years { varchar cluster_id
+        int model_year
+        int n
+        double p_value
+        bool is_elevated }
 ```
+
+`vehicle_component_indicator`, `indicator_events` and `cluster_model_years` implement
+the method of ESV26-289 (Jones et al., *A Check Engine Light for the Automotive Industry*):
+the fleet-normalised D/P indicator with its 6-month sustained-elevation test, event
+merging, and the binomial test for affected model years. `ml.detector_comparison`
+holds the before/after back-test from `python -m vroomcheck.detection.compare`, and
+`ml_before` keeps the original detector's results.
 
 ## Data quality
 

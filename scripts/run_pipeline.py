@@ -50,6 +50,11 @@ def step_dbt():
     dbt("test")
 
 
+def step_indicator():
+    from vroomcheck.detection.indicator import run_indicator
+    run_indicator()
+
+
 def step_embed():
     from vroomcheck.detection.embed import embed_complaints, embed_recalls
     embed_recalls()
@@ -59,6 +64,11 @@ def step_embed():
 def step_cluster():
     from vroomcheck.detection.cluster import run_clustering
     run_clustering()
+
+
+def step_model_years():
+    from vroomcheck.detection.model_years import run_model_years
+    run_model_years()
 
 
 def step_detect():
@@ -79,7 +89,8 @@ def step_briefs():
 
 
 STEPS = [("download", step_download), ("load", step_load), ("dq", step_dq), ("dbt", step_dbt),
-         ("embed", step_embed), ("cluster", step_cluster), ("detect", step_detect),
+         ("indicator", step_indicator), ("embed", step_embed), ("cluster", step_cluster),
+         ("model_years", step_model_years), ("detect", step_detect),
          ("backtest", step_backtest), ("briefs", step_briefs)]
 
 

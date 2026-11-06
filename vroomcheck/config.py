@@ -35,6 +35,22 @@ FOCUS_MAKES = [m.strip().upper() for m in os.getenv("VC_FOCUS_MAKES", "").split(
 HDBSCAN_MIN_CLUSTER = int(os.getenv("VC_HDBSCAN_MIN_CLUSTER", "15"))
 RECALL_MATCH_THRESHOLD = float(os.getenv("VC_RECALL_MATCH_THRESHOLD", "0.65"))
 
+# Which signal raises an alert:
+#   poisson  - the cluster's own causal Poisson spike test (the original detector)
+#   paper    - the fleet-normalised indicator from ESV26-289 (detection/indicator.py)
+#   combined - both must fire; either - at least one fires
+DETECTOR = os.getenv("VC_DETECTOR", "poisson")
+
+# ESV26-289 settings ("A Check Engine Light for the Automotive Industry", Jones et al.),
+# with the paper's daily windows converted to months.
+PAPER_COUNT_MONTHS = 12            # trailing window for complaint counts (paper: one year)
+PAPER_TEST_MONTHS = 6              # rolling hypothesis-test window (paper: 180 days)
+PAPER_THRESHOLD = 0.65             # H1: mean of 0.5 * (P + 1) over the window > 0.65
+PAPER_CONFIDENCE = 0.99            # flag when 1 - p >= 0.99
+PAPER_MERGE_GAP_MONTHS = 12        # flags less than 365 days apart form one event
+PAPER_MIN_SUPPORT = 3              # minimum trailing-year complaints behind a flag
+PAPER_MODEL_YEAR_ALPHA = 0.05      # binomial test for affected model years (Bonferroni)
+
 # ---------------------------------------------------------------- LLM
 LLM_PROVIDER = os.getenv("VC_LLM_PROVIDER", "groq")  # groq | gemini | offline
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")

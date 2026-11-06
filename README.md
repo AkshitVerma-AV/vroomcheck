@@ -90,7 +90,10 @@ flowchart LR
   * **semantic**: cosine similarity, re-ranked with component agreement and timing
 
   The result is one status per cluster: `EMERGING`, `RECALLED`, `WATCH` or `NON-DEFECT`.
+* `indicator.py`: the fleet-normalised D/P indicator from ESV26-289 (see *Research paper implementation* below), scored for every make × model × component per month.
+* `model_years.py`: the paper's binomial test, naming the model years each cluster is concentrated in.
 * `backtest.py`: answers competency question 04 against historical recalls.
+* `compare.py`: reruns the back-test under each detector (`VC_DETECTOR` = `poisson`, `paper`, `combined` or `either`) and prints the before/after table.
 
 **Agents (`vroomcheck/agents/graph.py`, LangGraph)**
 1. `signal_agent` pulls cluster statistics plus the most representative and most harmful complaints.
@@ -111,7 +114,7 @@ With no API key, drafting falls back to a deterministic template and the verifie
 | Agents and RAG | LangGraph | LangGraph 1.2, with RAG via DuckDB `array_cosine_similarity` ✅ |
 | LLMs | Llama (Groq), Gemini | Groq and Gemini clients ✅. **Needs `GROQ_API_KEY` in `.env`** |
 | Integration | MCP server | `mcp_server/server.py`, 6 tools ✅ |
-| Interface | Streamlit | `app/streamlit_app.py`, 5 views ✅ |
+| Interface | Streamlit | `app/streamlit_app.py`, 6 views ✅ |
 
 ## 6. Current results
 
@@ -142,6 +145,38 @@ Tuning history:
 * With the stricter rule that an alert must fall within the 24 months before the recall, coverage is 35%.
 
 **Known limitations.** Clusters are built on the full history, so cluster membership uses some post-recall information. The spike test itself is strictly causal. Clusters cover about 29% of complaints; the rest is HDBSCAN noise.
+
+### Research paper implementation: ESV26-289
+
+Paper: Jones, Kempegowda, Krivo and Ng, *A Check Engine Light for the Automotive Industry: Detecting Automotive Failures from Consumer Complaints and Online Forums*, NHTSA ESV ([ESV26-289](https://static.nhtsa.gov/esv/pdf/ESV/Proceedings/28/ESV26-289.pdf)).
+
+What we took from it:
+* **The D/P indicator** (`detection/indicator.py`). For each vehicle line and component, the vehicle's share of its own complaints is compared with the rest of the fleet's share using Cohen's h, scaled by ln(trailing-year count), and mapped to P in (-1, 1). An alert needs the paper's sustained-elevation test: the 6-month mean of 0.5(P+1) above 0.65 at 99% confidence, with more than 3 complaints in the trailing year. Flags under 12 months apart merge into events. The original Poisson test only compares a cluster with its own past; the indicator compares the vehicle with the rest of the fleet, so a best-seller is not flagged just for selling a lot.
+* **The binomial model-year test** (`detection/model_years.py`): the affected model years of each alert.
+
+Choices the paper leaves open, and ours: monthly instead of daily windows (6 months for 180 days); the vehicle's own complaint share; Cohen's h as the effect size for proportions; natural log; the vehicle left out of its own baseline.
+
+Before vs after, same clusters, recalls and back-test window (`python -m vroomcheck.detection.compare`):
+
+| Detector | Flagged early (of 440) | Median lead | EMERGING alerts | Alert months per 1,000 | Alerts then recalled | Detect step |
+|---|---|---|---|---|---|---|
+| `poisson` (before) | 153 (34.8%) | 9.0 mo | 108 | 17.2 | 10.5% | 4.5 s |
+| `paper` | 194 (44.1%) | 20.2 mo | 433 | 204.2 | 10.0% | 4.6 s |
+| `combined` (both) | 59 (13.4%) | 11.5 mo | 43 | 6.5 | 11.7% | 4.6 s |
+| `either` | 254 (57.7%) | 17.2 mo | 485 | 214.9 | 10.4% | 4.7 s |
+
+The indicator itself takes 0.6 s for the whole fleet. It finds more recalls in advance, but it flags vehicle-component pairs that stay elevated for years, so it raises about 12 times as many alert months without improving the share of alerts followed by a recall. Requiring both signals has the reverse trade-off. `poisson` stays the default; `either` is the choice if catching more recalls matters more than review workload.
+
+Affected model years against the years each matched recall covers (663 recalled clusters):
+
+| Method | Years named | Precision | Recall | Jaccard |
+|---|---|---|---|---|
+| Cluster span (before) | 7.6 | 0.355 | 0.967 | 0.338 |
+| Binomial test (after) | 2.9 | 0.540 | 0.545 | 0.362 |
+
+As in the paper, the binomial test is conservative: it names fewer years, and more of them are right.
+
+Limitation found while testing: complaint shares sum to one, so a surge in one component lowers every other component's baseline. With about a thousand vehicle lines the effect is small, but in a small fleet it produces false flags (see `tests/test_core.py`).
 
 **Next steps**
 * Rolling (time-sliced) re-clustering to remove the post-recall leakage above.
@@ -208,6 +243,6 @@ airflow/          DAG + docker-compose
 mcp_server/       MCP server
 app/              Streamlit dashboard
 scripts/          local pipeline runner
-tests/            unit tests (spike causality, verifier guardrail, cleaning)
+tests/            unit tests (spike causality, ESV26-289 indicator and model years, verifier guardrail, cleaning)
 docs/             data model, NHTSA field layouts
 ```

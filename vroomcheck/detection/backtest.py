@@ -57,7 +57,8 @@ def run_backtest() -> dict:
             join ml.cluster_monthly cm using (cluster_id)
             group by 1, 2
         )
-        select r.campno, r.recall_date, r.component_tops, r.influenced_by,
+        select (select any_value(detector) from ml.cluster_monthly) as detector,
+               r.campno, r.recall_date, r.component_tops, r.influenced_by,
                r.investigation_id, r.investigation_opened,
                b.cluster_id, b.match_score, p.pre_recall_complaints, p.first_alert_month,
                b.cluster_id is not null
@@ -72,7 +73,8 @@ def run_backtest() -> dict:
         left join pre p using (campno, cluster_id)
     """)
     s = con.execute("""
-        select count(*)                                              as recalls_in_scope,
+        select any_value(detector)                                   as detector,
+               count(*)                                              as recalls_in_scope,
                count(*) filter (where cluster_id is not null)       as recalls_with_cluster,
                count(*) filter (where detectable)                   as recalls_detectable,
                count(*) filter (where detectable and flagged_before_recall) as flagged_early,

@@ -2,8 +2,9 @@
 
 NHTSA republishes its flat files every day, so the DAG runs daily: download
 only what changed, reload raw, gate on data quality, rebuild the dbt models,
-embed new complaints, recluster, rescore spikes, back-test and refresh the
-briefs for the top emerging defects.
+score the fleet-normalised indicator from ESV26-289, embed new complaints,
+recluster, find each cluster's affected model years, rescore spikes, back-test
+and refresh the briefs for the top emerging defects.
 
 The project is mounted at /opt/vroomcheck (see airflow/docker-compose.yml).
 """
@@ -51,12 +52,16 @@ with DAG(
     dbt_seed = BashOperator(task_id="dbt_seed", bash_command=DBT.format(cmd="seed"))
     dbt_run = BashOperator(task_id="dbt_run", bash_command=DBT.format(cmd="run"))
     dbt_test = BashOperator(task_id="dbt_test", bash_command=DBT.format(cmd="test"))
+    indicator = PythonOperator(task_id="paper_indicator", python_callable=_call(
+        "vroomcheck.detection.indicator", "run_indicator"))
     embed_recalls = PythonOperator(task_id="embed_recalls", python_callable=_call(
         "vroomcheck.detection.embed", "embed_recalls"))
     embed_complaints = PythonOperator(task_id="embed_complaints", python_callable=_call(
         "vroomcheck.detection.embed", "embed_complaints"))
     cluster = PythonOperator(task_id="cluster", python_callable=_call(
         "vroomcheck.detection.cluster", "run_clustering"))
+    model_years = PythonOperator(task_id="model_years", python_callable=_call(
+        "vroomcheck.detection.model_years", "run_model_years"))
     spikes = PythonOperator(task_id="spike_detection", python_callable=_call(
         "vroomcheck.detection.spike", "run_spike_detection"))
     match = PythonOperator(task_id="match_recalls", python_callable=_call(
@@ -71,5 +76,5 @@ with DAG(
     download >> load >> dq >> dbt_seed >> dbt_run >> dbt_test
     # DuckDB allows one writer at a time, so ML steps run sequentially
     # (on Snowflake the two embedding tasks can run in parallel).
-    dbt_test >> embed_recalls >> embed_complaints >> cluster >> spikes >> match >> alerts
-    alerts >> backtest >> briefs
+    dbt_test >> indicator >> embed_recalls >> embed_complaints >> cluster >> model_years
+    model_years >> spikes >> match >> alerts >> backtest >> briefs

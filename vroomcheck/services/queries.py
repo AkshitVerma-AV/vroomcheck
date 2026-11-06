@@ -12,7 +12,7 @@ import pandas as pd
 import requests
 
 from vroomcheck import config
-from vroomcheck.db import connect
+from vroomcheck.db import connect, table_exists
 
 BRIEF_DIR = config.WAREHOUSE_PATH.parent / "briefs"
 
@@ -38,6 +38,7 @@ def layer_counts() -> pd.DataFrame:
         ("marts", "fct_tsbs"), ("marts", "dim_vehicle"), ("marts", "dim_component"),
         ("ml", "complaint_embeddings"), ("ml", "recall_embeddings"), ("ml", "clusters"),
         ("ml", "cluster_members"), ("ml", "alerts"), ("ml", "backtest_results"),
+        ("ml", "vehicle_component_indicator"), ("ml", "indicator_events"), ("ml", "cluster_model_years"),
     ]
     rows = []
     with ro() as con:
@@ -261,6 +262,59 @@ def backtest_summary() -> dict:
             from ml.backtest_results""").df().iloc[0].to_dict()
     s["pct_flagged_of_detectable"] = round(100 * s["flagged_early"] / max(s["recalls_detectable"], 1), 1)
     return s
+
+
+# ------------------------------------------------------------------ ESV26-289 method
+def indicator_series(component: str, vehicles: list[tuple[str, str]]) -> pd.DataFrame:
+    """Trailing-year complaints and the paper's P-indicator for some vehicle lines, one component."""
+    if not vehicles:
+        return pd.DataFrame()
+    pairs = " or ".join("(make = ? and model = ?)" for _ in vehicles)
+    params = [component] + [x for v in vehicles for x in v]
+    with ro() as con:
+        return con.execute(f"""
+            select make, model, month, n_12m, p_indicator, is_elevated
+            from ml.vehicle_component_indicator
+            where component = ? and ({pairs})
+            order by make, model, month""", params).df()
+
+
+def indicator_components() -> list[str]:
+    with ro() as con:
+        return [r[0] for r in con.execute("""select component from ml.vehicle_component_indicator
+                                             group by 1 order by sum(n) desc""").fetchall()]
+
+
+def indicator_vehicles(component: str) -> pd.DataFrame:
+    """Vehicle lines with complaints about a component, busiest first, with how often the paper flags them."""
+    with ro() as con:
+        return con.execute("""
+            select make, model, sum(n) as complaints, count(*) filter (where is_elevated) as elevated_months
+            from ml.vehicle_component_indicator where component = ?
+            group by 1, 2 order by complaints desc""", [component]).df()
+
+
+def cluster_model_years(cluster_id: str) -> pd.DataFrame:
+    with ro() as con:
+        return con.execute("select * from ml.cluster_model_years where cluster_id = ? order by model_year",
+                           [cluster_id]).df()
+
+
+def detector_comparison() -> pd.DataFrame:
+    with ro() as con:
+        if not table_exists(con, "ml", "detector_comparison"):
+            return pd.DataFrame()
+        return con.execute("select * from ml.detector_comparison").df()
+
+
+def model_year_accuracy() -> pd.DataFrame:
+    from vroomcheck.detection.model_years import evaluate_model_years
+    with ro() as con:
+        ev = evaluate_model_years(con)
+    if ev.empty:
+        return ev
+    return (ev.groupby("method")[["years_named", "precision", "recall", "jaccard"]].mean().round(3)
+              .reset_index())
 
 
 # ------------------------------------------------------------------ briefs

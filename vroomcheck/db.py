@@ -17,3 +17,8 @@ def connect(read_only: bool = False) -> duckdb.DuckDBPyConnection:
         for schema in ("raw", "ml"):
             con.execute(f"create schema if not exists {schema}")
     return con
+
+
+def table_exists(con: duckdb.DuckDBPyConnection, schema: str, name: str) -> bool:
+    return con.execute("select count(*) from information_schema.tables where table_schema = ? and table_name = ?",
+                       [schema, name]).fetchone()[0] > 0

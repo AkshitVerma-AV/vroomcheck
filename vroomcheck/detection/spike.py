@@ -11,6 +11,11 @@ For each cluster and month t:
     expected  = 3 * max(baseline, floor) * growth
     spike  <=> recent >= MIN_RECENT, recent/expected >= MIN_RATIO and
                Poisson P(X >= recent | expected) < P_MAX
+
+config.DETECTOR decides what raises the alert: this Poisson test, the paper's
+fleet-normalised indicator for the cluster's make, model and top component
+(detection/indicator.py), both, or either. Both signals are kept in
+ml.cluster_monthly so the dashboard and the comparison can show them side by side.
 """
 from __future__ import annotations
 
@@ -21,9 +26,11 @@ import pandas as pd
 from scipy.stats import poisson
 
 from vroomcheck import config
-from vroomcheck.db import connect
+from vroomcheck.db import connect, table_exists
 
 log = logging.getLogger(__name__)
+
+DETECTORS = ("poisson", "paper", "combined", "either")
 
 # tuned on the back-test (see README: 6/2.5/1e-3 flagged 29%, 4/2.0/1e-2 flagged ~51%)
 MIN_RECENT = 4
@@ -64,29 +71,69 @@ def score_cluster(counts: pd.Series, line_counts: pd.Series) -> pd.DataFrame:
                          "ratio": ratio, "p_value": p, "is_spike": spike})
 
 
-def run_spike_detection() -> int:
+def combine_flags(poisson: pd.Series, paper: pd.Series, detector: str) -> pd.Series:
+    """The alert flag for each cluster-month under one detector (see config.DETECTOR)."""
+    if detector == "poisson":
+        return poisson
+    if detector == "paper":
+        return paper
+    if detector == "combined":
+        return poisson & paper
+    if detector == "either":
+        return poisson | paper
+    raise ValueError(f"unknown detector {detector!r}; expected one of {DETECTORS}")
+
+
+def _paper_signal(con, required: bool) -> dict[tuple, pd.DataFrame]:
+    """The paper's indicator for each clustered (make, model, component), indexed by month."""
+    if not table_exists(con, "ml", "vehicle_component_indicator"):
+        if required:
+            raise RuntimeError("ml.vehicle_component_indicator is missing: run "
+                               "python -m vroomcheck.detection.indicator first")
+        return {}
+    ind = con.execute("""
+        select i.make, i.model, i.component, i.month, i.p_indicator, i.is_elevated
+        from ml.vehicle_component_indicator i
+        join (select distinct make, model, top_component as component from ml.clusters) c
+          using (make, model, component)""").df()
+    ind["month"] = pd.to_datetime(ind.month).astype("datetime64[ns]")
+    return {k: g.set_index("month") for k, g in ind.groupby(["make", "model", "component"])}
+
+
+def run_spike_detection(detector: str | None = None) -> int:
+    detector = detector or config.DETECTOR
+    if detector not in DETECTORS:
+        raise ValueError(f"unknown detector {detector!r}; expected one of {DETECTORS}")
     con = connect()
     cl, line, end = _monthly(con)
-    meta = con.execute("select cluster_id, make, model from ml.clusters").df().set_index("cluster_id")
+    paper = _paper_signal(con, required=detector != "poisson")
+    meta = con.execute("select cluster_id, make, model, top_component from ml.clusters").df().set_index("cluster_id")
     months = pd.date_range(f"{config.MIN_RECEIVED_YEAR}-01-01", end, freq="MS")
-    line_idx = line.set_index(["make", "model", "month"]).n
+    line_idx = line.set_index(["make", "model", "month"]).n.sort_index()
     out = []
     for cid, g in cl.groupby("cluster_id"):
-        make, model = meta.loc[cid, ["make", "model"]]
+        make, model, component = meta.loc[cid, ["make", "model", "top_component"]]
         counts = g.set_index(pd.to_datetime(g.month)).n.reindex(months, fill_value=0).astype(float)
         lc = line_idx.loc[(make, model)]
         lc.index = pd.to_datetime(lc.index)
         lc = lc.reindex(months, fill_value=0).astype(float)
         s = score_cluster(counts, lc)
+        sig = paper.get((make, model, component))
+        s["poisson_spike"] = s.is_spike
+        s["p_indicator"] = sig.p_indicator.reindex(months) if sig is not None else np.nan
+        s["paper_elevated"] = (sig.is_elevated.reindex(months, fill_value=False).astype(bool)
+                               if sig is not None else False)
+        s["is_spike"] = combine_flags(s.poisson_spike, s.paper_elevated, detector)
         s["cluster_id"] = cid
         out.append(s.rename_axis("month").reset_index())
     monthly = pd.concat(out, ignore_index=True)
+    monthly["detector"] = detector
     con.register("mon", monthly)
     con.execute("create or replace table ml.cluster_monthly as select * from mon")
     con.close()
     n_spiking = monthly.loc[monthly.is_spike, "cluster_id"].nunique()
-    log.info("scored %d clusters over %d months; %d have spiked at least once",
-             monthly.cluster_id.nunique(), len(months), n_spiking)
+    log.info("[%s] scored %d clusters over %d months; %d have spiked at least once",
+             detector, monthly.cluster_id.nunique(), len(months), n_spiking)
     return n_spiking
 
 
@@ -154,6 +201,11 @@ def match_recalls() -> int:
 def build_alerts() -> int:
     """Current state of every cluster: EMERGING (spiking, no recall), RECALLED or WATCH."""
     con = connect()
+    # affected model years from the paper's binomial test, when detection/model_years.py has run
+    years = ("""(select cluster_id, string_agg(model_year::varchar, ', ' order by model_year) as years
+                 from ml.cluster_model_years where is_elevated group by 1)"""
+             if table_exists(con, "ml", "cluster_model_years")
+             else "(select null::varchar as cluster_id, null::varchar as years)")
     con.execute(f"""
         create or replace table ml.alerts as
         with end_month as (select max(month) as m from ml.cluster_monthly),
@@ -163,16 +215,22 @@ def build_alerts() -> int:
                    max(month) filter (where is_spike) as last_spike_month,
                    max(ratio) filter (where month >= (select m from end_month) - interval {ACTIVE_WINDOW_MONTHS} month)
                        as recent_max_ratio,
-                   sum(n) filter (where month > (select m from end_month) - interval 3 month) as last_3m
+                   sum(n) filter (where month > (select m from end_month) - interval 3 month) as last_3m,
+                   max(p_indicator) filter (where month = (select m from end_month)) as p_indicator_now,
+                   bool_or(paper_elevated) filter (where month >= (select m from end_month)
+                                                   - interval {ACTIVE_WINDOW_MONTHS} month) as paper_elevated_recently,
+                   any_value(detector) as detector
             from ml.cluster_monthly group by 1
         ),
         best as (
             select * from ml.cluster_recall_match
             where rank = 1 and is_match
-        )
+        ),
+        years as {years}
         select c.cluster_id, c.make, c.model, c.min_model_year, c.max_model_year, c.size,
                c.top_component, c.top_system, c.keywords, c.n_crash, c.n_fire, c.n_injured, c.n_deaths,
                c.harm_rate, s.first_spike_month, s.last_spike_month, s.recent_max_ratio, s.last_3m,
+               s.p_indicator_now, s.paper_elevated_recently, y.years as affected_model_years, s.detector,
                b.campno as matched_campno, b.recall_date as matched_recall_date,
                b.match_score as recall_match_score, b.match_method,
                s.last_spike_month >= (select m from end_month) - interval {ACTIVE_WINDOW_MONTHS} month as is_active,
@@ -189,6 +247,7 @@ def build_alerts() -> int:
         from ml.clusters c
         left join spikes s using (cluster_id)
         left join best b using (cluster_id)
+        left join years y using (cluster_id)
         left join marts.dim_component o on o.component_top = c.top_component
     """)
     n = con.execute("select count(*) from ml.alerts where status = 'EMERGING'").fetchone()[0]

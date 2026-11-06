@@ -24,7 +24,7 @@ def cached(fn_name: str, *args, **kw):
 st.sidebar.title("Vroomcheck")
 st.sidebar.caption("Early warning for vehicle safety defects hidden in public complaint data")
 page = st.sidebar.radio("View", ["Emerging defects", "Check a vehicle (VIN)", "Back-test",
-                                 "Search complaints", "Data & pipeline"])
+                                 "Paper method (ESV26-289)", "Search complaints", "Data & pipeline"])
 st.sidebar.markdown(f"**LLM:** `{llm.model_name()}` ({llm.active_provider()})")
 
 
@@ -36,8 +36,15 @@ def spike_chart(cid: str, recall_date=None):
     fig.add_scatter(x=m.month, y=m.expected_3m / 3, name="expected (baseline x fleet growth)",
                     line=dict(color="#555", dash="dot"))
     sp = m[m.is_spike]
-    fig.add_scatter(x=sp.month, y=sp.n, mode="markers", name="spike flagged",
+    label = f"alert ({m.detector.iat[0]})" if "detector" in m and len(m) else "spike flagged"
+    fig.add_scatter(x=sp.month, y=sp.n, mode="markers", name=label,
                     marker=dict(color="#d62728", size=9, symbol="triangle-up"))
+    if "p_indicator" in m and m.p_indicator.notna().any():
+        # the paper's fleet-normalised indicator for the cluster's top component (right axis)
+        fig.add_scatter(x=m.month, y=m.p_indicator, name="ESV26-289 P-indicator (right axis)",
+                        yaxis="y2", line=dict(color="#9467bd", width=1.5))
+        fig.update_layout(yaxis2=dict(overlaying="y", side="right", range=[-1, 1], showgrid=False,
+                                      tickmode="linear", dtick=0.5, title="P-indicator"))
     if recall_date is not None and pd.notna(recall_date):
         fig.add_vline(x=pd.Timestamp(recall_date), line_color="#2ca02c", line_width=2)
         fig.add_annotation(x=pd.Timestamp(recall_date), y=1, yref="paper", text="recall", showarrow=False,
@@ -95,6 +102,11 @@ if page == "Emerging defects":
         st.markdown(f"**Keywords:** {c['keywords']}  ·  **Component:** {c['top_component']} "
                     f"({c['component_purity']:.0%} of complaints)  ·  **Model years:** "
                     f"{c['min_model_year']}–{c['max_model_year']}")
+        if "affected_model_years" in c:
+            years = c["affected_model_years"] or "none stands out (complaints spread evenly across the span)"
+            st.markdown(f"**Affected model years (ESV26-289 binomial test):** {years}"
+                        + (f"  ·  **P-indicator now:** {c['p_indicator_now']:+.2f}"
+                           if pd.notna(c.get("p_indicator_now")) else ""))
         st.plotly_chart(spike_chart(cid, c.get("matched_recall_date")), use_container_width=True)
         left, right = st.columns([3, 2])
         with left:
@@ -163,6 +175,52 @@ elif page == "Back-test":
     row = det[det.campno == pick].iloc[0]
     st.plotly_chart(spike_chart(row.cluster_id, row.recall_date), use_container_width=True)
 
+elif page == "Paper method (ESV26-289)":
+    st.header("What the ESV26-289 method adds to Vroomcheck")
+    st.caption("Jones et al., *A Check Engine Light for the Automotive Industry* (NHTSA ESV). "
+               "We added its fleet-normalised D/P indicator and its binomial model-year test.")
+    st.subheader("Before vs after: the same back-test under each detector")
+    cmp = cached("detector_comparison")
+    if cmp.empty:
+        st.info("Run `python -m vroomcheck.detection.compare` to fill this table.")
+    else:
+        st.dataframe(cmp.set_index("detector").T, use_container_width=True)
+        st.caption("poisson = before (the original detector) · paper = the ESV26-289 indicator alone · "
+                   "combined = both must fire · either = at least one fires")
+    st.subheader("Why normalise: raw counts vs the paper's P-indicator")
+    comps = cached("indicator_components")
+    comp = st.selectbox("Component", comps, index=comps.index("ENGINE") if "ENGINE" in comps else 0)
+    veh = cached("indicator_vehicles", comp)
+    labels = [f"{r.make} {r.model}" for r in veh.itertuples()]
+    # the paper's Figure 2 contrast: a busy line it never flags next to the busiest line it does flag
+    default = [f"{g.make.iat[0]} {g.model.iat[0]}" for g in (veh[veh.elevated_months == 0],
+                                                             veh[veh.elevated_months > 0]) if len(g)]
+    pick = st.multiselect("Vehicle lines", labels, default=default)
+    chosen = [tuple(veh.iloc[labels.index(p)][["make", "model"]]) for p in pick]
+    ser = cached("indicator_series", comp, chosen)
+    if not ser.empty:
+        ser["vehicle"] = ser.make + " " + ser.model
+        left, right = st.columns(2)
+        f1, f2 = go.Figure(), go.Figure()
+        for v, g in ser.groupby("vehicle"):
+            f1.add_scatter(x=g.month, y=g.n_12m, name=v)
+            f2.add_scatter(x=g.month, y=g.p_indicator, name=v)
+            e = g[g.is_elevated]
+            f2.add_scatter(x=e.month, y=e.p_indicator, mode="markers", showlegend=False,
+                           marker=dict(color="#d62728", size=5))
+        f1.update_layout(height=300, title="Complaints in the trailing 12 months (raw)",
+                         margin=dict(l=10, r=10, t=40, b=10))
+        f2.update_layout(height=300, title="P-indicator (red = sustained elevation flagged)",
+                         yaxis=dict(range=[-1, 1]), margin=dict(l=10, r=10, t=40, b=10))
+        left.plotly_chart(f1, use_container_width=True)
+        right.plotly_chart(f2, use_container_width=True)
+    st.subheader("Affected model years: cluster span vs the paper's binomial test")
+    acc = cached("model_year_accuracy")
+    if not acc.empty:
+        st.dataframe(acc, hide_index=True, use_container_width=True)
+        st.caption("Scored against the model years each matched recall actually covers (MY2015+). "
+                   "precision = share of named years the recall covers; recall = share of the recall's years named.")
+
 elif page == "Search complaints":
     st.header("Semantic search over owner narratives")
     qtext = st.text_input("Describe a failure", "car suddenly lost power on the highway and the screen went black")
@@ -186,7 +244,7 @@ else:
         ing [label="Ingest (Python)\\nETag-incremental download\\nraw load + DQ gate"];
         wh  [label="Warehouse (DuckDB / Snowflake)\\ndbt: staging → marts\\ncomponent ontology"]; }
       subgraph cluster_ai { label="AI ENGINEERING"; style=dashed;
-        det [label="Detect\\nMiniLM embeddings\\nHDBSCAN clusters\\nPoisson spike test"];
+        det [label="Detect\\nMiniLM embeddings\\nHDBSCAN clusters\\nPoisson spike test\\nESV26-289 indicator"];
         ag  [label="Agents (LangGraph)\\nsignal → RAG → draft\\n→ verifier guardrail"];
         out [label="Deliver\\nStreamlit · MCP server\\nVIN check (vPIC)"]; }
       src -> ing -> wh -> det -> ag -> out; wh -> ag; wh -> out;
