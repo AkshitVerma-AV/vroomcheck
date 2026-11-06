@@ -46,7 +46,7 @@ All data is public and comes from NHTSA. Field layouts are in [docs/nhtsa_layout
 Collection runs in [vroomcheck/ingestion](vroomcheck/ingestion):
 1. **`download.py`** streams each zip and keeps an ETag manifest, so only files that NHTSA has republished get downloaded again.
 2. **`load_raw.py`** loads the tab-delimited files into `raw.*` as VARCHAR, adds lineage columns, and keeps unparseable rows in `raw._load_rejects` (currently 0).
-3. **`quality_checks.py`** is a data-quality gate that writes to `raw._dq_results`. If a critical check fails, the pipeline stops before dbt runs.
+3. **`quality_checks.py`** is a data-quality gate of 19 checks that writes to `raw._dq_results`. If a critical check fails, the pipeline stops before dbt runs. The same checks run on Snowflake RAW (`--target snowflake`), and a full `load_raw_snowflake.py` load ends with them.
 
 ## 3. Data model
 

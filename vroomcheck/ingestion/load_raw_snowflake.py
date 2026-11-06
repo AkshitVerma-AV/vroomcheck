@@ -8,6 +8,9 @@ Files are uploaded to an internal stage (gzip-compressed on the way) and loaded 
 COPY INTO. NHTSA files contain literal quotes and backslashes, so the file format turns
 off quoting and escaping, matching read_csv(quote='', escape='') in load_raw.py.
 
+A full load ends with the same data-quality gate as the DuckDB pipeline
+(quality_checks.py --target snowflake), so a critical failure stops before dbt.
+
     python -m vroomcheck.ingestion.load_raw_snowflake              # all four datasets
     python -m vroomcheck.ingestion.load_raw_snowflake --only recalls
     python -m vroomcheck.ingestion.load_raw_snowflake --sample 2000
@@ -117,9 +120,13 @@ def load_all(only: str | None = None, sample: int | None = None) -> dict[str, in
                     if not files:
                         raise FileNotFoundError(f"no landing files for {ds.name}; run download first")
                     counts[key] = load_dataset(cur, ds, files, ds.name.upper(), ds.name)
-        return counts
     finally:
         con.close()
+    if not sample:
+        # same gate as the DuckDB pipeline: a critical failure stops here, before dbt
+        from vroomcheck.ingestion.quality_checks import run_checks
+        run_checks(target="snowflake")
+    return counts
 
 
 if __name__ == "__main__":
