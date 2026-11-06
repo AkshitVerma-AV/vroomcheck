@@ -24,6 +24,13 @@ the natural log, and a baseline that leaves the vehicle out of its own fleet.
 
 Flagged months less than 12 months apart are merged into events for display.
 The back-test reads the monthly flag, so merging never moves an alert earlier.
+
+run_indicator() computes everything inside Snowflake in SQL. Snowflake has no
+normal or t distribution functions, so the SQL uses the Abramowitz & Stegun
+26.2.17 approximation for Phi (error < 7.5e-8) and the exact closed form of the
+t distribution with 5 degrees of freedom (the 6-month window). score_indicator()
+and merge_events() are the same method in pandas: the unit tests and the
+Snowflake parity check run against them.
 """
 from __future__ import annotations
 
@@ -122,29 +129,153 @@ def merge_events(ind: pd.DataFrame, gap_months: int = config.PAPER_MERGE_GAP_MON
     return ev.reset_index(drop=True)[cols]
 
 
+def _phi(x: str) -> str:
+    """Standard normal CDF in SQL (Abramowitz & Stegun 26.2.17)."""
+    k = f"(1 / (1 + 0.2316419 * abs({x})))"
+    poly = (f"{k} * (0.319381530 + {k} * (-0.356563782 + {k} * (1.781477937"
+            f" + {k} * (-1.821255978 + {k} * 1.330274429))))")
+    upper = f"(1 - exp(-({x}) * ({x}) / 2) / sqrt(2 * pi()) * {poly})"
+    return f"iff({x} >= 0, {upper}, 1 - {upper})"
+
+
+def _t5_sf(t: str) -> str:
+    """P(T > t) for Student's t with 5 degrees of freedom, exact closed form, in SQL."""
+    th = f"atan(({t}) / sqrt(5))"
+    return f"(0.5 - ({th} + sin({th}) * (cos({th}) + 2::float / 3 * power(cos({th}), 3))) / pi())"
+
+
+def indicator_sql() -> str:
+    w, tw = config.PAPER_COUNT_MONTHS, config.PAPER_TEST_MONTHS
+    if tw != 6:
+        raise ValueError("the SQL t-test uses the closed form for 5 degrees of freedom (a 6-month window)")
+    window = f"partition by make, model, component order by month rows between {tw - 1} preceding and current row"
+    return f"""
+        create or replace transient table ml.vehicle_component_indicator as
+        with bounds as (
+            select dateadd(month, -1, date_trunc('month', max(received_date))) as end_month
+            from marts.fct_complaints
+        ),
+        monthly as (
+            select make, model, primary_component as component, received_month as month, count(*) as n
+            from marts.fct_complaints
+            where not is_remedy_complaint and received_month <= (select end_month from bounds)
+            group by all
+        ),
+        months as (
+            select month from (
+                select dateadd(month, row_number() over (order by seq4()) - 1,
+                               '{config.MIN_RECEIVED_YEAR}-01-01'::date) as month
+                from table(generator(rowcount => 1200)))
+            where month <= (select end_month from bounds)
+        ),
+        grid as (                   -- every vehicle-component on every month, zero-filled
+            select k.make, k.model, k.component, m.month, coalesce(x.n, 0) as n
+            from (select distinct make, model, component from monthly) k
+            cross join months m
+            left join monthly x
+              on x.make = k.make and x.model = k.model and x.component = k.component and x.month = m.month
+        ),
+        counts as (
+            select *,
+                   sum(n) over (partition by make, model, component order by month
+                                rows between {w - 1} preceding and current row) as n_12m,
+                   row_number() over (partition by make, model, component order by month) - 1 as month_index
+            from grid
+        ),
+        totals as (
+            select *,
+                   sum(n_12m) over (partition by make, model, month) as n_v,
+                   sum(n_12m) over (partition by component, month)   as n_c,
+                   sum(n_12m) over (partition by month)              as total
+            from counts
+        ),
+        shares as (                 -- float division: Snowflake divides integers as fixed-point decimals
+            select *,
+                   iff(n_v > 0, n_12m::float / n_v, 0)                              as share,
+                   iff(total - n_v > 0, (n_c - n_12m)::float / (total - n_v), 0)    as baseline
+            from totals
+        ),
+        effect as (
+            select *, 2 * asin(sqrt(share)) - 2 * asin(sqrt(baseline)) as cohens_h
+            from shares
+        ),
+        indicator as (
+            select *, iff(n_12m > 0, ln(greatest(n_12m, 1)::float) * cohens_h, 0) as d_indicator
+            from effect
+        ),
+        scored as (
+            select *, {_phi('d_indicator')} as score from indicator
+        ),
+        test as (
+            select *,
+                   sum(score) over ({window}) / {tw}::float as window_mean,
+                   greatest((sum(score * score) over ({window})
+                             - {tw} * power(sum(score) over ({window}) / {tw}::float, 2)) / {tw - 1}::float, 0)
+                       as window_var
+            from scored
+        ),
+        pvalues as (
+            select *,
+                   iff(window_var > 0,
+                       {_t5_sf(f'(window_mean - {config.PAPER_THRESHOLD}) / sqrt(window_var / {tw})')},
+                       iff(window_mean > {config.PAPER_THRESHOLD}, 0, 1)) as p_value
+            from test
+        )
+        select make, model, component, month, n, n_12m, share, baseline, cohens_h, d_indicator,
+               2 * score - 1 as p_indicator, window_mean, p_value,
+               month_index >= {w + tw - 2}
+                 and 1 - p_value >= {config.PAPER_CONFIDENCE}
+                 and n_12m > {config.PAPER_MIN_SUPPORT} as is_elevated
+        from pvalues
+        where n_12m > 0
+    """
+
+
+def events_sql() -> str:
+    gap = config.PAPER_MERGE_GAP_MONTHS
+    return f"""
+        create or replace transient table ml.indicator_events as
+        with flagged as (
+            select make, model, component, month, p_indicator,
+                   lag(month) over (partition by make, model, component order by month) as prev_month
+            from ml.vehicle_component_indicator where is_elevated
+        ),
+        numbered as (
+            select *, sum(iff(prev_month is null or datediff(month, prev_month, month) > {gap}, 1, 0))
+                          over (partition by make, model, component order by month
+                                rows between unbounded preceding and current row) as event_no
+            from flagged
+        ),
+        events as (
+            select make, model, component, event_no, min(month) as start_month, max(month) as end_month,
+                   count(*) as flagged_months, max(p_indicator) as peak_p_indicator
+            from numbered group by all
+        )
+        -- complaints from one year before the event starts through its end, as the paper counts them
+        select e.make, e.model, e.component, e.start_month, e.end_month, e.flagged_months,
+               e.peak_p_indicator, sum(i.n) as event_complaints
+        from events e
+        join ml.vehicle_component_indicator i
+          on i.make = e.make and i.model = e.model and i.component = e.component
+         and i.month > dateadd(month, -{config.PAPER_COUNT_MONTHS}, e.start_month) and i.month <= e.end_month
+        group by e.make, e.model, e.component, e.event_no, e.start_month, e.end_month,
+                 e.flagged_months, e.peak_p_indicator
+    """
+
+
 def run_indicator() -> int:
+    """Score the paper's indicator and merge its events, inside Snowflake."""
     con = connect()
-    end = con.execute("""select date_trunc('month', max(received_date)) - interval 1 month
-                         from marts.fct_complaints""").fetchone()[0]
-    counts = con.execute("""
-        select make, model, primary_component as component, received_month as month, count(*) as n
-        from marts.fct_complaints
-        where not is_remedy_complaint
-        group by all""").df()
-    months = pd.date_range(f"{config.MIN_RECEIVED_YEAR}-01-01", pd.Timestamp(end), freq="MS")
-    ind = score_indicator(counts, months)
-    events = merge_events(ind)
-    con.register("ind_df", ind)
-    con.register("ev_df", events)
-    con.execute("""create or replace table ml.vehicle_component_indicator as
-                   select * replace (month::date as month) from ind_df""")
-    con.execute("""create or replace table ml.indicator_events as
-                   select * replace (start_month::date as start_month, end_month::date as end_month)
-                   from ev_df""")
+    con.execute(indicator_sql())
+    con.execute(events_sql())
+    series, elevated, events = con.execute("""
+        select (select count(*) from (select distinct make, model, component from ml.vehicle_component_indicator)),
+               (select count_if(is_elevated) from ml.vehicle_component_indicator),
+               (select count(*) from ml.indicator_events)""").fetchone()
     con.close()
     log.info("paper indicator: %d vehicle-component series, %d elevated months, %d events",
-             ind[KEY].drop_duplicates().shape[0], int(ind.is_elevated.sum()), len(events))
-    return len(events)
+             series, elevated, events)
+    return events
 
 
 if __name__ == "__main__":

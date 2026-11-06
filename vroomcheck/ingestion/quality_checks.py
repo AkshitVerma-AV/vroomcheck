@@ -15,6 +15,7 @@ import logging
 from dataclasses import dataclass
 from typing import Callable
 
+from vroomcheck import config
 from vroomcheck.ingestion.sources import DATASETS
 
 log = logging.getLogger(__name__)
@@ -100,7 +101,7 @@ def _connect(target: str):
     if target == "snowflake":
         from vroomcheck.ingestion.load_raw_snowflake import connect
     else:
-        from vroomcheck.db import connect
+        from vroomcheck.db import connect_duckdb as connect
     return connect()
 
 
@@ -136,5 +137,5 @@ def run_checks(raise_on_fail: bool = True, target: str = "duckdb") -> list[dict]
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     ap = argparse.ArgumentParser()
-    ap.add_argument("--target", choices=list(DIALECTS), default="duckdb")
+    ap.add_argument("--target", choices=list(DIALECTS), default=config.BACKEND)
     run_checks(target=ap.parse_args().target)

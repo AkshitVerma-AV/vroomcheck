@@ -41,7 +41,7 @@ ACTIVE_WINDOW_MONTHS = 6
 
 
 def _monthly(con) -> tuple[pd.DataFrame, pd.DataFrame, pd.Timestamp]:
-    end = con.execute("""select date_trunc('month', max(received_date)) - interval 1 month
+    end = con.execute("""select dateadd(month, -1, date_trunc('month', max(received_date)))
                          from marts.fct_complaints""").fetchone()[0]
     cl = con.execute("""
         select m.cluster_id, c.received_month as month, count(*) n
@@ -128,8 +128,7 @@ def run_spike_detection(detector: str | None = None) -> int:
         out.append(s.rename_axis("month").reset_index())
     monthly = pd.concat(out, ignore_index=True)
     monthly["detector"] = detector
-    con.register("mon", monthly)
-    con.execute("create or replace table ml.cluster_monthly as select * from mon")
+    con.write_df(monthly, "ml.cluster_monthly")
     con.close()
     n_spiking = monthly.loc[monthly.is_spike, "cluster_id"].nunique()
     log.info("[%s] scored %d clusters over %d months; %d have spiked at least once",
@@ -153,7 +152,7 @@ def match_recalls() -> int:
     """
     con = connect()
     con.execute(f"""
-        create or replace table ml.cluster_recall_match as
+        create or replace transient table ml.cluster_recall_match as
         with cand as (
             select distinct c.cluster_id, b.campno
             from ml.clusters c
@@ -170,10 +169,10 @@ def match_recalls() -> int:
             group by 1, 2
         ), scored as (
             select cand.cluster_id, cand.campno, r.recall_date, r.component_tops,
-                   array_cosine_similarity(c.centroid, e.embedding) as similarity,
-                   array_cosine_similarity(c.centroid, e.embedding)
-                     + 0.1 * contains(coalesce(r.component_tops, ''), coalesce(c.top_component, '#'))::int
-                     + 0.1 * (r.recall_date between c.first_received - interval 6 month and c.last_received)::int
+                   vector_cosine_similarity(c.centroid, e.embedding) as similarity,
+                   vector_cosine_similarity(c.centroid, e.embedding)
+                     + 0.1 * iff(contains(coalesce(r.component_tops, ''), coalesce(c.top_component, '#')), 1, 0)
+                     + 0.1 * iff(r.recall_date between dateadd(month, -6, c.first_received) and c.last_received, 1, 0)
                        as match_score,
                    coalesce(ci.cited_share, 0) as cited_share
             from cand
@@ -202,23 +201,22 @@ def build_alerts() -> int:
     """Current state of every cluster: EMERGING (spiking, no recall), RECALLED or WATCH."""
     con = connect()
     # affected model years from the paper's binomial test, when detection/model_years.py has run
-    years = ("""(select cluster_id, string_agg(model_year::varchar, ', ' order by model_year) as years
+    years = ("""(select cluster_id, listagg(model_year::varchar, ', ') within group (order by model_year) as years
                  from ml.cluster_model_years where is_elevated group by 1)"""
              if table_exists(con, "ml", "cluster_model_years")
              else "(select null::varchar as cluster_id, null::varchar as years)")
+    active_from = f"dateadd(month, -{ACTIVE_WINDOW_MONTHS}, (select m from end_month))"
     con.execute(f"""
-        create or replace table ml.alerts as
+        create or replace transient table ml.alerts as
         with end_month as (select max(month) as m from ml.cluster_monthly),
         spikes as (
             select cluster_id,
-                   min(month) filter (where is_spike) as first_spike_month,
-                   max(month) filter (where is_spike) as last_spike_month,
-                   max(ratio) filter (where month >= (select m from end_month) - interval {ACTIVE_WINDOW_MONTHS} month)
-                       as recent_max_ratio,
-                   sum(n) filter (where month > (select m from end_month) - interval 3 month) as last_3m,
-                   max(p_indicator) filter (where month = (select m from end_month)) as p_indicator_now,
-                   bool_or(paper_elevated) filter (where month >= (select m from end_month)
-                                                   - interval {ACTIVE_WINDOW_MONTHS} month) as paper_elevated_recently,
+                   min(iff(is_spike, month, null)) as first_spike_month,
+                   max(iff(is_spike, month, null)) as last_spike_month,
+                   max(iff(month >= {active_from}, ratio, null)) as recent_max_ratio,
+                   sum(iff(month > dateadd(month, -3, (select m from end_month)), n, null)) as last_3m,
+                   max(iff(month = (select m from end_month), p_indicator, null)) as p_indicator_now,
+                   boolor_agg(iff(month >= {active_from}, paper_elevated, null)) as paper_elevated_recently,
                    any_value(detector) as detector
             from ml.cluster_monthly group by 1
         ),
@@ -233,13 +231,12 @@ def build_alerts() -> int:
                s.p_indicator_now, s.paper_elevated_recently, y.years as affected_model_years, s.detector,
                b.campno as matched_campno, b.recall_date as matched_recall_date,
                b.match_score as recall_match_score, b.match_method,
-               s.last_spike_month >= (select m from end_month) - interval {ACTIVE_WINDOW_MONTHS} month as is_active,
+               s.last_spike_month >= {active_from} as is_active,
                case
                    -- clusters about paperwork rather than a failure (attachments, police reports, letters)
-                   when regexp_matches(c.keywords, '{NON_DEFECT_RE}') then 'NON-DEFECT'
+                   when regexp_instr(c.keywords, '{NON_DEFECT_RE}') > 0 then 'NON-DEFECT'
                    when b.campno is not null then 'RECALLED'
-                   when s.last_spike_month >= (select m from end_month) - interval {ACTIVE_WINDOW_MONTHS} month
-                       then 'EMERGING'
+                   when s.last_spike_month >= {active_from} then 'EMERGING'
                    else 'WATCH'
                end as status,
                round(ln(1 + coalesce(s.last_3m, 0)) * least(coalesce(s.recent_max_ratio, 1), 10)

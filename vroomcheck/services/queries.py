@@ -1,6 +1,6 @@
 """Read-side service layer shared by the Streamlit dashboard, the MCP server and
-the agents. Every function opens a read-only warehouse connection, so many
-consumers can query while no pipeline run is writing.
+the agents. It reads Snowflake (database VROOMCHECK: MARTS, ML, RAW) through one
+long-lived connection, and stores the agents' briefs in ML.BRIEFS.
 """
 from __future__ import annotations
 
@@ -12,22 +12,16 @@ import pandas as pd
 import requests
 
 from vroomcheck import config
-from vroomcheck.db import connect, table_exists
-
-BRIEF_DIR = config.WAREHOUSE_PATH.parent / "briefs"
+from vroomcheck.db import shared_connection, table_exists
 
 
 @contextmanager
 def ro():
-    con = connect(read_only=True)
-    try:
-        yield con
-    finally:
-        con.close()
+    yield shared_connection()
 
 
 def _vec_literal(v: np.ndarray) -> str:
-    return "[" + ",".join(f"{x:.6f}" for x in v) + f"]::float[{config.EMBED_DIM}]"
+    return "[" + ",".join(f"{x:.6f}" for x in v) + f"]::vector(float, {config.EMBED_DIM})"
 
 
 # ------------------------------------------------------------------ overview
@@ -42,7 +36,7 @@ def layer_counts() -> pd.DataFrame:
     ]
     rows = []
     with ro() as con:
-        existing = {(s, t) for s, t in con.execute(
+        existing = {(s.lower(), t.lower()) for s, t in con.execute(
             "select table_schema, table_name from information_schema.tables").fetchall()}
         for s, t in tables:
             n = con.execute(f"select count(*) from {s}.{t}").fetchone()[0] if (s, t) in existing else None
@@ -85,8 +79,8 @@ def get_cluster(cluster_id: str) -> dict | None:
 
 def cluster_centroid(cluster_id: str) -> np.ndarray:
     with ro() as con:
-        v = con.execute("select centroid from ml.clusters where cluster_id = ?", [cluster_id]).fetchone()[0]
-    return np.asarray(v, dtype=np.float32)
+        v = con.execute("select centroid::array from ml.clusters where cluster_id = ?", [cluster_id]).fetchone()[0]
+    return np.asarray(json.loads(v) if isinstance(v, str) else v, dtype=np.float32)
 
 
 def cluster_monthly(cluster_id: str) -> pd.DataFrame:
@@ -121,7 +115,7 @@ def similar_recalls(vec: np.ndarray, k: int = 5, make: str | None = None) -> pd.
         return con.execute(f"""
             select r.campno, r.recall_date, r.makes, r.component_tops, r.potentially_affected,
                    r.defect_summary, r.consequence_summary, r.remedy_summary, r.investigation_id,
-                   array_cosine_similarity(e.embedding, {_vec_literal(vec)}) as similarity
+                   vector_cosine_similarity(e.embedding, {_vec_literal(vec)}) as similarity
             from ml.recall_embeddings e join marts.fct_recalls r using (campno)
             {flt}
             order by similarity desc limit {int(k)}
@@ -172,7 +166,7 @@ def search_complaints(query: str, make: str | None = None, model: str | None = N
         return con.execute(f"""
             select c.odino, c.make, c.model, c.model_year, c.received_date, c.primary_component,
                    left(c.narrative, 500) as narrative,
-                   array_cosine_similarity(e.embedding, {_vec_literal(vec)}) as similarity,
+                   vector_cosine_similarity(e.embedding, {_vec_literal(vec)}) as similarity,
                    m.cluster_id
             from ml.complaint_embeddings e join marts.fct_complaints c using (odino)
             left join ml.cluster_members m using (odino)
@@ -237,7 +231,7 @@ def vin_check(vin: str) -> dict:
                                  [v["make"], model, v["model_year"]]).df()
         by_component = con.execute("""
             select primary_component as component, count(*) as complaints,
-                   sum(is_crash::int) as crashes, sum(is_fire::int) as fires, sum(injured) as injured
+                   count_if(is_crash) as crashes, count_if(is_fire) as fires, sum(injured) as injured
             from marts.fct_complaints where make = ? and model = ? and model_year = ?
             group by 1 order by 2 desc""", [v["make"], model, v["model_year"]]).df()
     return {"vehicle": v, "recalls": recalls, "live_recall_count": len(live_recalls(v["make"], v["model"], v["model_year"])),
@@ -254,10 +248,10 @@ def backtest_summary() -> dict:
     with ro() as con:
         s = con.execute("""
             select count(*) as recalls_in_scope,
-                   count(*) filter (where detectable) as recalls_detectable,
-                   count(*) filter (where detectable and flagged_before_recall) as flagged_early,
-                   median(lead_months) filter (where detectable and flagged_before_recall) as median_lead_months,
-                   median(lead_vs_investigation_months) filter (where detectable and flagged_before_recall)
+                   count_if(detectable) as recalls_detectable,
+                   count_if(detectable and flagged_before_recall) as flagged_early,
+                   median(iff(detectable and flagged_before_recall, lead_months, null)) as median_lead_months,
+                   median(iff(detectable and flagged_before_recall, lead_vs_investigation_months, null))
                        as median_lead_vs_investigation_months
             from ml.backtest_results""").df().iloc[0].to_dict()
     s["pct_flagged_of_detectable"] = round(100 * s["flagged_early"] / max(s["recalls_detectable"], 1), 1)
@@ -289,7 +283,7 @@ def indicator_vehicles(component: str) -> pd.DataFrame:
     """Vehicle lines with complaints about a component, busiest first, with how often the paper flags them."""
     with ro() as con:
         return con.execute("""
-            select make, model, sum(n) as complaints, count(*) filter (where is_elevated) as elevated_months
+            select make, model, sum(n) as complaints, count_if(is_elevated) as elevated_months
             from ml.vehicle_component_indicator where component = ?
             group by 1, 2 order by complaints desc""", [component]).df()
 
@@ -318,11 +312,24 @@ def model_year_accuracy() -> pd.DataFrame:
 
 
 # ------------------------------------------------------------------ briefs
+def _ensure_briefs(con) -> None:
+    con.execute("""create table if not exists ml.briefs
+                   (cluster_id varchar primary key, brief variant, saved_at timestamp_ntz)""")
+
+
 def load_brief(cluster_id: str) -> dict | None:
-    p = BRIEF_DIR / f"{cluster_id}.json"
-    return json.loads(p.read_text()) if p.exists() else None
+    with ro() as con:
+        _ensure_briefs(con)
+        row = con.execute("select brief from ml.briefs where cluster_id = ?", [cluster_id]).fetchone()
+    return json.loads(row[0]) if row else None
 
 
 def save_brief(cluster_id: str, brief: dict) -> None:
-    BRIEF_DIR.mkdir(parents=True, exist_ok=True)
-    (BRIEF_DIR / f"{cluster_id}.json").write_text(json.dumps(brief, indent=2, default=str))
+    with ro() as con:
+        _ensure_briefs(con)
+        con.execute("""merge into ml.briefs t
+                       using (select ? as cluster_id, parse_json(?) as brief) s on t.cluster_id = s.cluster_id
+                       when matched then update set brief = s.brief, saved_at = current_timestamp()
+                       when not matched then insert (cluster_id, brief, saved_at)
+                                             values (s.cluster_id, s.brief, current_timestamp())""",
+                    [cluster_id, json.dumps(brief, default=str)])

@@ -32,11 +32,12 @@ def _r(x) -> float | None:
 
 
 def _snapshot_before(con) -> None:
+    """Zero-copy clone of the original detector's results into ML_BEFORE (only the first time)."""
     if table_exists(con, "ml_before", "backtest_results"):
         return
     con.execute("create schema if not exists ml_before")
     for t in ("cluster_monthly", "alerts", "backtest_results"):
-        con.execute(f"create table ml_before.{t} as select * from ml.{t}")
+        con.execute(f"create transient table ml_before.{t} clone ml.{t}")
     log.info("saved the original detector's results to ml_before")
 
 
@@ -44,21 +45,20 @@ def _alert_metrics(con) -> dict:
     """Alert burden and a precision proxy for the detector currently in ml.cluster_monthly."""
     m = con.execute(f"""
         with end_m as (select max(month) as e from ml.cluster_monthly),
-        first as (select cluster_id, min(month) filter (where is_spike) as first_alert
-                  from ml.cluster_monthly group by 1),
+        firsts as (select cluster_id, min(iff(is_spike, month, null)) as first_alert
+                   from ml.cluster_monthly group by 1),
         rec as (select cluster_id, recall_date from ml.cluster_recall_match where rank = 1 and is_match)
         select
-            (select count(*) from ml.alerts where status = 'EMERGING')                       as emerging_alerts,
-            (select 1000.0 * count(*) filter (where is_spike) / count(*) from ml.cluster_monthly)
-                                                                                              as alert_months_per_1000,
-            count(*) filter (where f.first_alert is not null)                                as clusters_ever_alerted,
+            (select count(*) from ml.alerts where status = 'EMERGING')                        as emerging_alerts,
+            (select 1000.0 * count_if(is_spike) / count(*) from ml.cluster_monthly)           as alert_months_per_1000,
+            count_if(f.first_alert is not null)                                               as clusters_ever_alerted,
             -- old enough that a recall within the window could have happened before the data ends
-            count(*) filter (where f.first_alert <= e.e - interval {LOOKBACK_MONTHS} month)  as alerts_old_enough,
-            count(*) filter (where f.first_alert <= e.e - interval {LOOKBACK_MONTHS} month
-                               and r.recall_date > f.first_alert
-                               and r.recall_date <= f.first_alert + interval {LOOKBACK_MONTHS} month)
-                                                                                              as alerts_then_recalled
-        from first f cross join end_m e left join rec r using (cluster_id)""").df().iloc[0].to_dict()
+            count_if(f.first_alert <= dateadd(month, -{LOOKBACK_MONTHS}, e.e))                as alerts_old_enough,
+            count_if(f.first_alert <= dateadd(month, -{LOOKBACK_MONTHS}, e.e)
+                     and r.recall_date > f.first_alert
+                     and r.recall_date <= dateadd(month, {LOOKBACK_MONTHS}, f.first_alert))   as alerts_then_recalled
+        from firsts f cross join end_m e left join rec r using (cluster_id)""").df().iloc[0].to_dict()
+    m = {k: float(v) if k == "alert_months_per_1000" else int(v) for k, v in m.items()}
     m["precision_proxy_pct"] = 100 * m["alerts_then_recalled"] / max(m["alerts_old_enough"], 1)
     return m
 
@@ -99,8 +99,7 @@ def run_comparison(detectors=DETECTORS, rebuild: bool = False) -> pd.DataFrame:
 
     df = pd.DataFrame(rows)
     con = connect()
-    con.register("cmp_df", df)
-    con.execute("create or replace table ml.detector_comparison as select * from cmp_df")
+    con.write_df(df, "ml.detector_comparison")
     years = evaluate_model_years(con)
     con.close()
 

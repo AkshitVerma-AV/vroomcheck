@@ -15,6 +15,10 @@ ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
 
 # ---------------------------------------------------------------- storage
+# snowflake: the pipeline, ML layer and apps read and write Snowflake (database VROOMCHECK).
+# duckdb: the local file below, now only the dbt dev target and the source of the ML move.
+BACKEND = os.getenv("VC_BACKEND", "snowflake")
+DBT_TARGET = os.getenv("VC_DBT_TARGET", "snowflake" if BACKEND == "snowflake" else "dev")
 LANDING_DIR = Path(os.getenv("VC_LANDING_DIR", ROOT / "data" / "landing"))
 WAREHOUSE_PATH = Path(os.getenv("VC_WAREHOUSE", ROOT / "warehouse" / "vroomcheck.duckdb"))
 DBT_DIR = ROOT / "dbt" / "vroomcheck"

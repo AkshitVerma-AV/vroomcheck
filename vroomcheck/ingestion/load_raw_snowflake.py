@@ -102,7 +102,7 @@ def _sample_files(ds: Dataset, n_lines: int, tmp: Path) -> list[Path]:
     return out
 
 
-def load_all(only: str | None = None, sample: int | None = None) -> dict[str, int]:
+def load_all(only: str | None = None, sample: int | None = None, run_gate: bool = True) -> dict[str, int]:
     keys = [only] if only else list(DATASETS)
     con = connect()
     try:
@@ -122,7 +122,7 @@ def load_all(only: str | None = None, sample: int | None = None) -> dict[str, in
                     counts[key] = load_dataset(cur, ds, files, ds.name.upper(), ds.name)
     finally:
         con.close()
-    if not sample:
+    if run_gate and not sample:
         # same gate as the DuckDB pipeline: a critical failure stops here, before dbt
         from vroomcheck.ingestion.quality_checks import run_checks
         run_checks(target="snowflake")

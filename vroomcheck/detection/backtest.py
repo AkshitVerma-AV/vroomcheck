@@ -30,12 +30,12 @@ LOOKBACK_MONTHS = 24
 def run_backtest() -> dict:
     con = connect()
     con.execute(f"""
-        create or replace table ml.backtest_results as
+        create or replace transient table ml.backtest_results as
         with recall_scope as (
             select r.campno, r.recall_date, r.component_tops, r.defect_summary,
                    r.investigation_id, r.investigation_opened, r.influenced_by
             from marts.fct_recalls r
-            where r.recall_date >= date '{BACKTEST_FROM}'
+            where r.recall_date >= '{BACKTEST_FROM}'::date
               and r.recall_date <= (select max(month) from ml.cluster_monthly)
               and r.min_model_year >= {config.MIN_MODEL_YEAR}
         ),
@@ -48,10 +48,10 @@ def run_backtest() -> dict:
         ),
         pre as (
             select b.campno, b.cluster_id,
-                   sum(cm.n) filter (where cm.month < date_trunc('month', r.recall_date)) as pre_recall_complaints,
-                   min(cm.month) filter (where cm.is_spike and cm.month < date_trunc('month', r.recall_date)
-                                        and cm.month >= date_trunc('month', r.recall_date) - interval {LOOKBACK_MONTHS} month)
-                       as first_alert_month
+                   sum(iff(cm.month < date_trunc('month', r.recall_date), cm.n, null)) as pre_recall_complaints,
+                   min(iff(cm.is_spike and cm.month < date_trunc('month', r.recall_date)
+                           and cm.month >= dateadd(month, -{LOOKBACK_MONTHS}, date_trunc('month', r.recall_date)),
+                           cm.month, null)) as first_alert_month
             from best_cluster b
             join recall_scope r using (campno)
             join ml.cluster_monthly cm using (cluster_id)
@@ -64,9 +64,9 @@ def run_backtest() -> dict:
                b.cluster_id is not null
                  and coalesce(p.pre_recall_complaints, 0) >= {MIN_PRE_RECALL_COMPLAINTS} as detectable,
                p.first_alert_month is not null as flagged_before_recall,
-               date_diff('day', p.first_alert_month + interval 1 month, r.recall_date) / 30.44 as lead_months,
+               datediff(day, dateadd(month, 1, p.first_alert_month), r.recall_date) / 30.44 as lead_months,
                case when r.investigation_opened is not null and p.first_alert_month is not null
-                    then date_diff('day', p.first_alert_month + interval 1 month, r.investigation_opened) / 30.44
+                    then datediff(day, dateadd(month, 1, p.first_alert_month), r.investigation_opened) / 30.44
                end as lead_vs_investigation_months
         from recall_scope r
         left join best_cluster b using (campno)
@@ -75,14 +75,15 @@ def run_backtest() -> dict:
     s = con.execute("""
         select any_value(detector)                                   as detector,
                count(*)                                              as recalls_in_scope,
-               count(*) filter (where cluster_id is not null)       as recalls_with_cluster,
-               count(*) filter (where detectable)                   as recalls_detectable,
-               count(*) filter (where detectable and flagged_before_recall) as flagged_early,
-               median(lead_months) filter (where detectable and flagged_before_recall) as median_lead_months,
-               median(lead_vs_investigation_months) filter (where detectable and flagged_before_recall)
+               count_if(cluster_id is not null)                     as recalls_with_cluster,
+               count_if(detectable)                                 as recalls_detectable,
+               count_if(detectable and flagged_before_recall)       as flagged_early,
+               median(iff(detectable and flagged_before_recall, lead_months, null)) as median_lead_months,
+               median(iff(detectable and flagged_before_recall, lead_vs_investigation_months, null))
                                                                     as median_lead_vs_investigation
         from ml.backtest_results
     """).df().iloc[0].to_dict()
+    s = {k: (float(v) if k.startswith("median") and v is not None else v) for k, v in s.items()}
     s["pct_flagged_of_detectable"] = 100 * s["flagged_early"] / max(s["recalls_detectable"], 1)
     con.close()
     log.info("backtest: %s", s)

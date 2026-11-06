@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 
 from vroomcheck.config import LANDING_DIR
-from vroomcheck.db import connect
+from vroomcheck.db import connect_duckdb as connect
 from vroomcheck.ingestion.sources import DATASETS, Dataset
 
 log = logging.getLogger(__name__)

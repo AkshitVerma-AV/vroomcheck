@@ -8,6 +8,7 @@ them into a cluster. Each cluster gets a keyword label via class-based TF-IDF.
 """
 from __future__ import annotations
 
+import json
 import logging
 import re
 
@@ -30,15 +31,16 @@ def _slug(s: str) -> str:
 
 
 def _embeddings_for(con, make: str, model: str) -> tuple[pd.DataFrame, np.ndarray]:
-    tbl = con.execute("""
+    df = con.execute("""
         select c.odino, c.received_date, c.model_year, c.primary_component, c.primary_system,
-               c.is_crash, c.is_fire, c.injured, c.deaths, c.harm_score, c.narrative, e.embedding
+               c.is_crash, c.is_fire, c.injured, c.deaths, c.harm_score, c.narrative,
+               e.embedding::array as embedding
         from marts.fct_complaints c join ml.complaint_embeddings e using (odino)
         where c.make = ? and c.model = ? and not c.is_remedy_complaint
-    """, [make, model]).to_arrow_table()
-    emb = tbl.column("embedding").combine_chunks()
-    X = emb.flatten().to_numpy(zero_copy_only=False).reshape(-1, config.EMBED_DIM)
-    df = tbl.drop(["embedding"]).to_pandas()
+        order by c.odino
+    """, [make, model]).df()
+    X = np.array([json.loads(v) if isinstance(v, str) else v for v in df.pop("embedding")],
+                 dtype=np.float32).reshape(-1, config.EMBED_DIM)
     return df, X
 
 
@@ -103,6 +105,18 @@ def cluster_vehicle_line(con, make: str, model: str) -> tuple[pd.DataFrame, pd.D
     return pd.DataFrame(rows), pd.DataFrame(members)
 
 
+def save_clusters(con, clusters: pd.DataFrame, members: pd.DataFrame) -> None:
+    """Write ml.clusters (centroid as VECTOR) and ml.cluster_members."""
+    con.write_df(clusters.drop(columns=["built_at"], errors="ignore"), "ml._clusters_stage")
+    con.execute(f"""create or replace table ml.clusters as
+                    select * exclude (centroid), centroid::vector(float, {config.EMBED_DIM}) as centroid,
+                           current_timestamp() as built_at
+                    from ml._clusters_stage""")
+    con.execute("drop table if exists ml._clusters_stage")
+    # permanent, like the embeddings: rebuilding clusters changes every downstream result
+    con.write_df(members, "ml.cluster_members", transient=False)
+
+
 def run_clustering() -> int:
     con = connect()
     groups = con.execute("""
@@ -124,12 +138,7 @@ def run_clustering() -> int:
                  i, len(groups), make, model, n, len(c), 100 * len(m) / n)
     clusters = pd.concat(all_c, ignore_index=True)
     members = pd.concat(all_m, ignore_index=True)
-    con.register("c_df", clusters)
-    con.register("m_df", members)
-    con.execute(f"""create or replace table ml.clusters as
-                    select * exclude (centroid), centroid::float[{config.EMBED_DIM}] as centroid,
-                           current_timestamp as built_at from c_df""")
-    con.execute("create or replace table ml.cluster_members as select * from m_df")
+    save_clusters(con, clusters, members)
     con.close()
     log.info("built %d clusters covering %d complaints", len(clusters), len(members))
     return len(clusters)

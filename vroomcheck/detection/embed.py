@@ -1,9 +1,10 @@
 """Embed complaint narratives and recall defect descriptions.
 
-Vectors are stored in the warehouse as fixed-size FLOAT[384] arrays so that
-similarity search can run in SQL (array_cosine_similarity) for the RAG step,
-the MCP server and the dashboard. Embedding is incremental: only complaints
-and recalls without a vector are processed.
+The model runs locally (sentence-transformers); the vectors are stored in
+Snowflake as VECTOR(FLOAT, 384) so that similarity search runs in SQL
+(VECTOR_COSINE_SIMILARITY) for the RAG step, the MCP server and the dashboard.
+Embedding is incremental: only complaints and recalls without a vector are
+processed.
 """
 from __future__ import annotations
 
@@ -11,7 +12,7 @@ import logging
 from functools import lru_cache
 
 import numpy as np
-import pyarrow as pa
+import pandas as pd
 
 from vroomcheck import config
 from vroomcheck.db import connect
@@ -37,12 +38,6 @@ def embed_texts(texts: list[str], batch_size: int = config.EMBED_BATCH) -> np.nd
     return vecs.astype(np.float32)
 
 
-def _to_arrow(ids: list[str], vecs: np.ndarray, id_col: str) -> pa.Table:
-    flat = pa.array(vecs.reshape(-1), type=pa.float32())
-    emb = pa.FixedSizeListArray.from_arrays(flat, config.EMBED_DIM)
-    return pa.table({id_col: pa.array(ids), "embedding": emb})
-
-
 def _scope_filter() -> str:
     if config.FOCUS_MAKES:
         makes = ", ".join(f"'{m}'" for m in config.FOCUS_MAKES)
@@ -50,11 +45,24 @@ def _scope_filter() -> str:
     return ""
 
 
+def insert_vectors(con, table: str, id_col: str, ids: list[str], vecs: np.ndarray, model: str) -> None:
+    """Append (id, vector) rows to an ML embedding table, going through a transient staging table."""
+    con.write_df(pd.DataFrame({id_col: ids, "embedding": list(vecs.astype(float))}), "ml._emb_batch")
+    con.execute(f"""insert into {table} ({id_col}, embedding, model, embedded_at)
+                    select {id_col}, embedding::vector(float, {config.EMBED_DIM}), ?, current_timestamp()
+                    from ml._emb_batch""", [model])
+    con.execute("drop table if exists ml._emb_batch")
+
+
+def ensure_embedding_table(con, table: str, id_col: str) -> None:
+    con.execute(f"""create table if not exists {table}
+                    ({id_col} varchar primary key, embedding vector(float, {config.EMBED_DIM}),
+                     model varchar, embedded_at timestamp_ntz)""")
+
+
 def embed_complaints(chunk: int = 20000) -> int:
     con = connect()
-    con.execute(f"""create table if not exists ml.complaint_embeddings
-                    (odino varchar primary key, embedding float[{config.EMBED_DIM}],
-                     model varchar, embedded_at timestamp)""")
+    ensure_embedding_table(con, "ml.complaint_embeddings", "odino")
     # Only models with enough complaints are clustered, so only those are embedded.
     todo = con.execute(f"""
         with eligible as (
@@ -63,22 +71,16 @@ def embed_complaints(chunk: int = 20000) -> int:
         select c.odino, c.narrative
         from marts.fct_complaints c
         join eligible using (make, model)
-        anti join ml.complaint_embeddings e on e.odino = c.odino
         where not c.is_remedy_complaint {_scope_filter()}
+          and not exists (select 1 from ml.complaint_embeddings e where e.odino = c.odino)
         order by c.received_date
     """).fetchall()
     log.info("%s complaints to embed", f"{len(todo):,}")
     done = 0
     for i in range(0, len(todo), chunk):
         part = todo[i:i + chunk]
-        ids = [r[0] for r in part]
         vecs = embed_texts([clean_narrative(r[1]) for r in part])
-        tbl = _to_arrow(ids, vecs, "odino")
-        con.register("emb_batch", tbl)
-        con.execute(f"""insert into ml.complaint_embeddings
-                        select odino, embedding::float[{config.EMBED_DIM}], ?, current_timestamp
-                        from emb_batch""", [config.EMBED_MODEL])
-        con.unregister("emb_batch")
+        insert_vectors(con, "ml.complaint_embeddings", "odino", [r[0] for r in part], vecs, config.EMBED_MODEL)
         done += len(part)
         log.info("embedded %s / %s", f"{done:,}", f"{len(todo):,}")
     con.close()
@@ -87,22 +89,17 @@ def embed_complaints(chunk: int = 20000) -> int:
 
 def embed_recalls() -> int:
     con = connect()
-    con.execute(f"""create table if not exists ml.recall_embeddings
-                    (campno varchar primary key, embedding float[{config.EMBED_DIM}],
-                     model varchar, embedded_at timestamp)""")
+    ensure_embedding_table(con, "ml.recall_embeddings", "campno")
     todo = con.execute("""
         select r.campno, coalesce(r.defect_summary, '') || ' ' || coalesce(r.consequence_summary, '')
         from marts.fct_recalls r
-        anti join ml.recall_embeddings e on e.campno = r.campno
         where r.defect_summary is not null
+          and not exists (select 1 from ml.recall_embeddings e where e.campno = r.campno)
     """).fetchall()
     log.info("%s recalls to embed", f"{len(todo):,}")
     if todo:
         vecs = embed_texts([clean_recall(r[1]) for r in todo])
-        con.register("emb_batch", _to_arrow([r[0] for r in todo], vecs, "campno"))
-        con.execute(f"""insert into ml.recall_embeddings
-                        select campno, embedding::float[{config.EMBED_DIM}], ?, current_timestamp
-                        from emb_batch""", [config.EMBED_MODEL])
+        insert_vectors(con, "ml.recall_embeddings", "campno", [r[0] for r in todo], vecs, config.EMBED_MODEL)
     con.close()
     return len(todo)
 

@@ -209,6 +209,10 @@ erDiagram
         bool is_elevated }
 ```
 
+The ML layer lives in Snowflake schema `VROOMCHECK.ML`, with embeddings and cluster
+centroids stored as `VECTOR(FLOAT, 384)`. Embeddings, clusters, members and briefs are
+permanent tables; everything that can be rebuilt from them is transient.
+
 `vehicle_component_indicator`, `indicator_events` and `cluster_model_years` implement
 the method of ESV26-289 (Jones et al., *A Check Engine Light for the Automotive Industry*):
 the fleet-normalised D/P indicator with its 6-month sustained-elevation test, event

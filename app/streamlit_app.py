@@ -103,7 +103,8 @@ if page == "Emerging defects":
                     f"({c['component_purity']:.0%} of complaints)  ·  **Model years:** "
                     f"{c['min_model_year']}–{c['max_model_year']}")
         if "affected_model_years" in c:
-            years = c["affected_model_years"] or "none stands out (complaints spread evenly across the span)"
+            years = (c["affected_model_years"] if pd.notna(c["affected_model_years"])
+                     else "none stands out (complaints spread evenly across the span)")
             st.markdown(f"**Affected model years (ESV26-289 binomial test):** {years}"
                         + (f"  ·  **P-indicator now:** {c['p_indicator_now']:+.2f}"
                            if pd.notna(c.get("p_indicator_now")) else ""))

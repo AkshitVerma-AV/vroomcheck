@@ -20,7 +20,9 @@ from airflow.operators.python import PythonOperator
 PROJECT = "/opt/vroomcheck"
 sys.path.insert(0, PROJECT)
 
-DBT = f"dbt --no-use-colors {{cmd}} --project-dir {PROJECT}/dbt/vroomcheck --profiles-dir {PROJECT}/dbt/vroomcheck"
+# everything runs on Snowflake: raw load, quality gate, dbt (target snowflake) and the ML layer
+DBT = (f"dbt --no-use-colors {{cmd}} --target snowflake "
+       f"--project-dir {PROJECT}/dbt/vroomcheck --profiles-dir {PROJECT}/dbt/vroomcheck")
 
 
 def _call(module: str, fn: str, *args):
@@ -45,10 +47,11 @@ with DAG(
 ) as dag:
     download = PythonOperator(task_id="download_nhtsa", python_callable=_call(
         "vroomcheck.ingestion.download", "download_all"))
+    # the 19-check gate runs as its own task, so the loader skips its built-in run
     load = PythonOperator(task_id="load_raw", python_callable=_call(
-        "vroomcheck.ingestion.load_raw", "load_all"))
+        "vroomcheck.ingestion.load_raw_snowflake", "load_all", None, None, False))
     dq = PythonOperator(task_id="quality_gate", python_callable=_call(
-        "vroomcheck.ingestion.quality_checks", "run_checks"))
+        "vroomcheck.ingestion.quality_checks", "run_checks", True, "snowflake"))
     dbt_seed = BashOperator(task_id="dbt_seed", bash_command=DBT.format(cmd="seed"))
     dbt_run = BashOperator(task_id="dbt_run", bash_command=DBT.format(cmd="run"))
     dbt_test = BashOperator(task_id="dbt_test", bash_command=DBT.format(cmd="test"))
@@ -74,7 +77,5 @@ with DAG(
         "vroomcheck.agents.graph", "generate_top_briefs", 10))
 
     download >> load >> dq >> dbt_seed >> dbt_run >> dbt_test
-    # DuckDB allows one writer at a time, so ML steps run sequentially
-    # (on Snowflake the two embedding tasks can run in parallel).
     dbt_test >> indicator >> embed_recalls >> embed_complaints >> cluster >> model_years
     model_years >> spikes >> match >> alerts >> backtest >> briefs

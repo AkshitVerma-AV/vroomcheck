@@ -108,10 +108,10 @@ With no API key, drafting falls back to a deterministic template and the verifie
 | Concern | Pitch | Implemented now |
 |---|---|---|
 | Ingestion | Python loaders, Airflow | Python loaders ✅, Airflow DAG ✅ ([airflow/](airflow); Docker, since Airflow does not run natively on Windows) and an equivalent local runner `scripts/run_pipeline.py` |
-| Warehouse | Snowflake, Iceberg | DuckDB locally ✅. dbt `snowflake` target configured in `profiles.yml` (needs credentials) |
+| Warehouse | Snowflake, Iceberg | Snowflake ✅: RAW, REF, STAGING, MARTS and the ML layer in database `VROOMCHECK` (`VC_BACKEND=snowflake`, the default). DuckDB remains the dbt dev target |
 | Transform | dbt Core | dbt Core 1.12: 4 staging views, 14 mart tables, 5 seeds, 63 tests ✅ |
 | Embeddings | sentence-transformers, HDBSCAN | sentence-transformers 6.2 + scikit-learn HDBSCAN ✅ |
-| Agents and RAG | LangGraph | LangGraph 1.2, with RAG via DuckDB `array_cosine_similarity` ✅ |
+| Agents and RAG | LangGraph | LangGraph 1.2, with RAG via Snowflake `VECTOR(FLOAT, 384)` and `VECTOR_COSINE_SIMILARITY` ✅ |
 | LLMs | Llama (Groq), Gemini | Groq and Gemini clients ✅. **Needs `GROQ_API_KEY` in `.env`** |
 | Integration | MCP server | `mcp_server/server.py`, 6 tools ✅ |
 | Interface | Streamlit | `app/streamlit_app.py`, 6 views ✅ |
@@ -156,6 +156,8 @@ What we took from it:
 
 Choices the paper leaves open, and ours: monthly instead of daily windows (6 months for 180 days); the vehicle's own complaint share; Cohen's h as the effect size for proportions; natural log; the vehicle left out of its own baseline.
 
+A, B and C run as SQL inside Snowflake (`ML.VEHICLE_COMPONENT_INDICATOR`, `ML.INDICATOR_EVENTS`, `ML.CLUSTER_MODEL_YEARS`). Snowflake has no normal or t distribution functions, so Phi uses the Abramowitz & Stegun 26.2.17 approximation (error < 7.5e-8) and the 6-month t-test uses the exact closed form for 5 degrees of freedom; the binomial tail is summed exactly from a log-factorial table. Against the pandas reference implementation, all 520,629 indicator rows, 2,518 events and 12,871 model-year rows agree on every flag.
+
 Before vs after, same clusters, recalls and back-test window (`python -m vroomcheck.detection.compare`):
 
 | Detector | Flagged early (of 440) | Median lead | EMERGING alerts | Alert months per 1,000 | Alerts then recalled | Detect step |
@@ -195,6 +197,17 @@ cp .env.example .env            # add GROQ_API_KEY for LLM briefs
 .venv/Scripts/python scripts/run_pipeline.py --from detect # re-score only
 .venv/Scripts/streamlit run app/streamlit_app.py           # dashboard at http://localhost:8501
 .venv/Scripts/python -m pytest -q tests                    # unit tests
+```
+
+**Running on Snowflake.** Everything reads and writes Snowflake when `VC_BACKEND=snowflake` (the default) and the `SNOWFLAKE_*` settings are in `.env` (see the Snowflake section). The pipeline then runs the Snowflake raw loader with its 19-check gate, dbt with `--target snowflake`, and the ML steps against `VROOMCHECK.ML`. Embeddings and HDBSCAN still run in Python, since Snowflake has neither MiniLM nor HDBSCAN, but read and write only Snowflake. To move an existing DuckDB ML layer instead of recomputing it:
+
+```bash
+.venv/Scripts/python scripts/migrate_ml_to_snowflake.py    # embeddings, clusters, members and briefs -> VROOMCHECK.ML
+.venv/Scripts/python scripts/run_pipeline.py --only indicator      # A + C in Snowflake SQL
+.venv/Scripts/python scripts/run_pipeline.py --only model_years    # B in Snowflake SQL
+.venv/Scripts/python scripts/run_pipeline.py --only detect         # spike test, recall matching, alerts
+.venv/Scripts/python scripts/run_pipeline.py --only backtest
+.venv/Scripts/python -m vroomcheck.detection.compare              # before vs after, on Snowflake
 ```
 
 **Getting the data without rebuilding it.** The NHTSA zips (291 MB) and the built warehouse (1.4 GB) are too large for git. They are published as assets of the [`data-2026-10-21` release](https://github.com/AkshitVerma-AV/vroomcheck/releases/tag/data-2026-10-21) instead. With the GitHub CLI logged in:

@@ -24,7 +24,8 @@ log = logging.getLogger("pipeline")
 
 def dbt(*args: str) -> None:
     exe = Path(sys.executable).with_name("dbt.exe" if sys.platform == "win32" else "dbt")
-    cmd = [str(exe), *args, "--project-dir", str(config.DBT_DIR), "--profiles-dir", str(config.DBT_DIR)]
+    cmd = [str(exe), *args, "--target", config.DBT_TARGET,
+           "--project-dir", str(config.DBT_DIR), "--profiles-dir", str(config.DBT_DIR)]
     log.info("$ %s", " ".join(cmd[:2] + list(args)))
     subprocess.run(cmd, check=True, cwd=config.DBT_DIR)
 
@@ -35,11 +36,18 @@ def step_download():
 
 
 def step_load():
-    from vroomcheck.ingestion.load_raw import load_all
+    if config.BACKEND == "snowflake":
+        # PUT + COPY INTO RAW; a full load ends with the 19-check gate on Snowflake RAW
+        from vroomcheck.ingestion.load_raw_snowflake import load_all
+    else:
+        from vroomcheck.ingestion.load_raw import load_all
     load_all()
 
 
 def step_dq():
+    if config.BACKEND == "snowflake":
+        log.info("the quality gate already ran at the end of the Snowflake load")
+        return
     from vroomcheck.ingestion.quality_checks import run_checks
     run_checks()
 
